@@ -9,6 +9,7 @@ using TopSpeed.Server.Logging;
 using TopSpeed.Server.Network;
 using TopSpeed.Server.Localization;
 using TopSpeed.Server.Updates;
+using TopSpeed.Server.Commands.Options;
 
 namespace TopSpeed.Server.Commands
 {
@@ -21,6 +22,8 @@ namespace TopSpeed.Server.Commands
         private readonly CancellationTokenSource _shutdownSource;
         private ServerUpdateRunner _updater;
         private readonly CommandRegistry _registry;
+        private readonly OptionMenu _serverOptionsMenu;
+        private readonly OptionMenu _moderationOptionsMenu;
         private Thread? _thread;
         private bool _stopRequested;
 
@@ -38,6 +41,7 @@ namespace TopSpeed.Server.Commands
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _shutdownSource = shutdownSource ?? throw new ArgumentNullException(nameof(shutdownSource));
             _updater = updater ?? throw new ArgumentNullException(nameof(updater));
+            _settings.Moderation ??= new ServerModerationSettings();
             _registry = new CommandRegistry(new[]
             {
                 new CommandDefinition("help", LocalizationService.Mark("Show available server commands."), ExecuteHelp),
@@ -47,6 +51,8 @@ namespace TopSpeed.Server.Commands
                 new CommandDefinition("update", LocalizationService.Mark("Manually check for server updates."), ExecuteUpdate),
                 new CommandDefinition("shutdown", LocalizationService.Mark("Shutdown the server."), ExecuteShutdown)
             });
+            _moderationOptionsMenu = CreateModerationOptionsMenu();
+            _serverOptionsMenu = CreateServerOptionsMenu();
         }
 
         public bool Start()
@@ -117,7 +123,10 @@ namespace TopSpeed.Server.Commands
             for (var i = 0; i < commands.Count; i++)
             {
                 var command = commands[i];
-                ConsoleSink.WriteLine("\"" + command.Name + "\": " + LocalizationService.Translate(command.Description));
+                ConsoleSink.WriteLine(LocalizationService.Format(
+                    LocalizationService.Mark("Command \"{0}\": {1}"),
+                    command.Name,
+                    LocalizationService.Translate(command.Description)));
             }
         }
 
@@ -157,57 +166,79 @@ namespace TopSpeed.Server.Commands
 
         private void ExecuteOptions()
         {
+            ShowOptionsMenu(_serverOptionsMenu);
+        }
+
+        private OptionMenu CreateServerOptionsMenu()
+        {
+            return new OptionMenu(
+                LocalizationService.Mark("Server options:"),
+                new List<OptionItem>
+                {
+                    new OptionItem("language", LocalizationService.Mark("Language"), OptionValueType.Choice, EditLanguage, CurrentLanguageLabel),
+                    new OptionItem("motd", LocalizationService.Mark("Message of the day"), OptionValueType.Text, EditMotd, () => FormatMotd(_settings.Motd)),
+                    new OptionItem("server_port", LocalizationService.Mark("Server port"), OptionValueType.Numeric, EditServerPort, () => _settings.Port.ToString()),
+                    new OptionItem("discovery_port", LocalizationService.Mark("Discovery port"), OptionValueType.Numeric, EditDiscoveryPort, () => _settings.DiscoveryPort.ToString()),
+                    new OptionItem("max_players", LocalizationService.Mark("Max players"), OptionValueType.Numeric, EditMaxPlayers, () => _settings.MaxPlayers.ToString()),
+                    new OptionItem("server_architecture", LocalizationService.Mark("Server architecture"), OptionValueType.Choice, EditRuntimeArchitecture, CurrentRuntimeAssetLabel),
+                    new OptionItem("check_updates_on_startup", LocalizationService.Mark("Check for updates on startup"), OptionValueType.Bool, ToggleCheckForUpdatesOnStartup, () => CommandInput.FormatOnOff(_settings.CheckForUpdatesOnStartup)),
+                    new OptionItem("moderation", LocalizationService.Mark("Moderation"), OptionValueType.Menu, () => ShowOptionsMenu(_moderationOptionsMenu))
+                });
+        }
+
+        private OptionMenu CreateModerationOptionsMenu()
+        {
+            return new OptionMenu(
+                LocalizationService.Mark("Moderation options:"),
+                new List<OptionItem>
+                {
+                    new OptionItem("block_repeated_letters_in_name", LocalizationService.Mark("Block repeated letters in call signs"), OptionValueType.Bool, ToggleBlockRepeatedLettersInName, () => CommandInput.FormatOnOff(_settings.Moderation.BlockRepeatedLettersInName)),
+                    new OptionItem("max_name_length", LocalizationService.Mark("Maximum call sign length"), OptionValueType.Numeric, EditModerationMaxNameLength, () => _settings.Moderation.MaxNameLength.ToString()),
+                    new OptionItem("allow_duplicate_names", LocalizationService.Mark("Allow duplicate call signs"), OptionValueType.Bool, ToggleAllowDuplicateNames, () => CommandInput.FormatOnOff(_settings.Moderation.AllowDuplicateNames)),
+                    new OptionItem("text_chat", LocalizationService.Mark("Text chat"), OptionValueType.Bool, ToggleTextChat, () => CommandInput.FormatOnOff(_settings.Moderation.TextChat))
+                });
+        }
+
+        private void ShowOptionsMenu(OptionMenu menu)
+        {
+            if (menu == null)
+                return;
+
             while (!_stopRequested && !_shutdownSource.IsCancellationRequested)
             {
-                var options = BuildOptionsMenuEntries();
-                if (!CommandInput.TryPromptMenuChoice(LocalizationService.Mark("Server options:"), options, out var choiceIndex, backOptionIndex: options.Count - 1))
+                var options = BuildOptionMenuEntries(menu);
+                var backIndex = menu.Items.Count;
+                if (!CommandInput.TryPromptMenuChoice(menu.TitleMessageId, options, out var choiceIndex, backOptionIndex: backIndex))
                 {
                     DisableCommands(LocalizationService.Mark("Standard input is no longer available. Server commands are disabled."));
                     return;
                 }
 
-                switch (choiceIndex)
-                {
-                    case 0:
-                        EditLanguage();
-                        break;
-                    case 1:
-                        EditMotd();
-                        break;
-                    case 2:
-                        EditServerPort();
-                        break;
-                    case 3:
-                        EditDiscoveryPort();
-                        break;
-                    case 4:
-                        EditMaxPlayers();
-                        break;
-                    case 5:
-                        EditRuntimeArchitecture();
-                        break;
-                    case 6:
-                        ToggleCheckForUpdatesOnStartup();
-                        break;
-                    default:
-                        return;
-                }
+                if (choiceIndex == backIndex || choiceIndex < 0 || choiceIndex >= menu.Items.Count)
+                    return;
+
+                menu.Items[choiceIndex].Activate();
             }
         }
 
-        private IReadOnlyList<string> BuildOptionsMenuEntries()
+        private static IReadOnlyList<string> BuildOptionMenuEntries(OptionMenu menu)
         {
-            return new[]
+            var entries = new List<string>(menu.Items.Count + 1);
+            for (var i = 0; i < menu.Items.Count; i++)
             {
-                BuildOptionLine(LocalizationService.Mark("Language"), CurrentLanguageLabel()),
-                BuildOptionLine(LocalizationService.Mark("Message of the day"), FormatMotd(_settings.Motd)),
-                LocalizationService.Format(LocalizationService.Mark("Server port: {0}"), _settings.Port),
-                LocalizationService.Format(LocalizationService.Mark("Discovery port: {0}"), _settings.DiscoveryPort),
-                LocalizationService.Format(LocalizationService.Mark("Max players: {0}"), _settings.MaxPlayers),
-                BuildOptionLine(LocalizationService.Mark("Server architecture"), CurrentRuntimeAssetLabel()),
-                BuildOptionLine(LocalizationService.Mark("Check for updates on startup"), CommandInput.FormatOnOff(_settings.CheckForUpdatesOnStartup)),
-                LocalizationService.Translate(LocalizationService.Mark("Back"))
-            };
+                var item = menu.Items[i];
+                var label = LocalizationService.Translate(item.LabelMessageId);
+                if (item.Type == OptionValueType.Menu)
+                {
+                    entries.Add(label);
+                    continue;
+                }
+
+                entries.Add(label + ": " + item.GetValueOrEmpty());
+            }
+
+            entries.Add(LocalizationService.Translate(LocalizationService.Mark("Back")));
+            return entries;
         }
 
         private string CurrentLanguageLabel()
@@ -268,7 +299,7 @@ namespace TopSpeed.Server.Commands
                 options.Add(ServerUpdateConfig.FormatRuntimeOptionLabel(runtimeOptions[i]));
             options.Add(LocalizationService.Translate(LocalizationService.Mark("Back")));
 
-            if (!CommandInput.TryPromptMenuChoice("Choose server architecture:", options, out var choiceIndex, backOptionIndex: options.Count - 1))
+            if (!CommandInput.TryPromptMenuChoice(LocalizationService.Mark("Choose server architecture:"), options, out var choiceIndex, backOptionIndex: options.Count - 1))
             {
                 DisableCommands(LocalizationService.Mark("Standard input is no longer available. Server commands are disabled."));
                 return;
@@ -285,11 +316,15 @@ namespace TopSpeed.Server.Commands
 
             if (changed)
             {
-                ConsoleSink.WriteLine("Server architecture set to " + ServerUpdateConfig.FormatRuntimeOptionLabel(selected) + ".");
+                ConsoleSink.WriteLine(LocalizationService.Format(
+                    LocalizationService.Mark("Server architecture set to {0}."),
+                    ServerUpdateConfig.FormatRuntimeOptionLabel(selected)));
                 return;
             }
 
-            ConsoleSink.WriteLine("Server architecture remains " + ServerUpdateConfig.FormatRuntimeOptionLabel(selected) + ".");
+            ConsoleSink.WriteLine(LocalizationService.Format(
+                LocalizationService.Mark("Server architecture remains {0}."),
+                ServerUpdateConfig.FormatRuntimeOptionLabel(selected)));
         }
 
         private void EditMotd()
@@ -354,6 +389,50 @@ namespace TopSpeed.Server.Commands
             _settings.CheckForUpdatesOnStartup = !_settings.CheckForUpdatesOnStartup;
             SaveSettings();
             ConsoleSink.WriteLine(BuildOptionLine(LocalizationService.Mark("Check for updates on startup"), CommandInput.FormatOnOff(_settings.CheckForUpdatesOnStartup)));
+        }
+
+        private void ToggleBlockRepeatedLettersInName()
+        {
+            _settings.Moderation.BlockRepeatedLettersInName = !_settings.Moderation.BlockRepeatedLettersInName;
+            ApplyModerationSettings();
+            ConsoleSink.WriteLine(BuildOptionLine(LocalizationService.Mark("Block repeated letters in call signs"), CommandInput.FormatOnOff(_settings.Moderation.BlockRepeatedLettersInName)));
+        }
+
+        private void EditModerationMaxNameLength()
+        {
+            if (!CommandInput.TryPromptInt(
+                    LocalizationService.Format(LocalizationService.Mark("Enter max call sign length (1-{0}):"), ProtocolConstants.MaxPlayerNameLength),
+                    1,
+                    ProtocolConstants.MaxPlayerNameLength,
+                    out var maxNameLength))
+            {
+                DisableCommands(LocalizationService.Mark("Standard input is no longer available. Server commands are disabled."));
+                return;
+            }
+
+            _settings.Moderation.MaxNameLength = maxNameLength;
+            ApplyModerationSettings();
+            ConsoleSink.WriteLineFormat(LocalizationService.Mark("Maximum call sign length updated to {0}."), maxNameLength);
+        }
+
+        private void ToggleAllowDuplicateNames()
+        {
+            _settings.Moderation.AllowDuplicateNames = !_settings.Moderation.AllowDuplicateNames;
+            ApplyModerationSettings();
+            ConsoleSink.WriteLine(BuildOptionLine(LocalizationService.Mark("Allow duplicate call signs"), CommandInput.FormatOnOff(_settings.Moderation.AllowDuplicateNames)));
+        }
+
+        private void ToggleTextChat()
+        {
+            _settings.Moderation.TextChat = !_settings.Moderation.TextChat;
+            ApplyModerationSettings();
+            ConsoleSink.WriteLine(BuildOptionLine(LocalizationService.Mark("Text chat"), CommandInput.FormatOnOff(_settings.Moderation.TextChat)));
+        }
+
+        private void ApplyModerationSettings()
+        {
+            _server.SetModerationSettings(_settings.Moderation);
+            SaveSettings();
         }
 
         private void SaveSettings()

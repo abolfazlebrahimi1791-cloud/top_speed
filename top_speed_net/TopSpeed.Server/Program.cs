@@ -70,14 +70,19 @@ namespace TopSpeed.Server
                 Port = settings.Port,
                 DiscoveryPort = settings.DiscoveryPort,
                 MaxPlayers = settings.MaxPlayers,
-                Motd = settings.Motd
+                Motd = settings.Motd,
+                Moderation = settings.Moderation.Clone()
             };
             if (loggingEnabled)
                 logger.Info(LocalizationService.Format(
-                    LocalizationService.Mark("Server configuration: port={0}, discoveryPort={1}, maxPlayers={2}."),
+                    LocalizationService.Mark("Server configuration: port={0}, discoveryPort={1}, maxPlayers={2}, moderation.maxNameLength={3}, moderation.blockRepeatedLettersInName={4}, moderation.allowDuplicateNames={5}, moderation.textChat={6}."),
                     config.Port,
                     config.DiscoveryPort,
-                    config.MaxPlayers));
+                    config.MaxPlayers,
+                    config.Moderation.MaxNameLength,
+                    config.Moderation.BlockRepeatedLettersInName,
+                    config.Moderation.AllowDuplicateNames,
+                    config.Moderation.TextChat));
 
             using var server = new RaceServer(config, logger);
             using var discovery = new ServerDiscoveryService(server, config, logger);

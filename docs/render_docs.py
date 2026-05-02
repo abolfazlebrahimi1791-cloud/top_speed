@@ -274,11 +274,21 @@ def normalize_action_reference_blocks(text: str) -> str:
     return result
 
 
+def normalize_escaped_headings(text: str) -> str:
+    """Treat escaped markdown heading markers as headings when they start a line."""
+    if not text:
+        return text
+
+    heading_re = re.compile(r"^(\s*)\\(#{1,6})(\s+.*)$", re.MULTILINE)
+    return heading_re.sub(r"\1\2\3", text)
+
+
 def render_markdown(input_path: Path, output_path: Path) -> None:
     text = input_path.read_text(encoding="utf-8-sig")
     text = normalize_toc_block(text)
     text = normalize_key_blocks(text)
     text = normalize_action_reference_blocks(text)
+    text = normalize_escaped_headings(text)
     body = markdown.markdown(
         text,
         extensions=[

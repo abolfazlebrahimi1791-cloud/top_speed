@@ -7,6 +7,7 @@ using TopSpeed.Localization;
 using TopSpeed.Protocol;
 using TopSpeed.Server.Protocol;
 using TopSpeed.Server.Tracks;
+using TopSpeed.Server.Moderation;
 
 namespace TopSpeed.Server.Network
 {
@@ -23,6 +24,12 @@ namespace TopSpeed.Server.Network
 
         private void BroadcastGlobalChat(PlayerConnection sender, string message)
         {
+            if (!TextChatModeration.TryAllowTextChat(_config.Moderation, out var moderationMessage))
+            {
+                SendProtocolMessage(sender, ProtocolMessageCode.Failed, moderationMessage);
+                return;
+            }
+
             var trimmed = (message ?? string.Empty).Trim();
             if (string.IsNullOrWhiteSpace(trimmed))
                 return;
@@ -51,6 +58,12 @@ namespace TopSpeed.Server.Network
 
         private void BroadcastRoomChat(PlayerConnection sender, string message)
         {
+            if (!TextChatModeration.TryAllowTextChat(_config.Moderation, out var moderationMessage))
+            {
+                SendProtocolMessage(sender, ProtocolMessageCode.Failed, moderationMessage);
+                return;
+            }
+
             var trimmed = (message ?? string.Empty).Trim();
             if (string.IsNullOrWhiteSpace(trimmed))
                 return;

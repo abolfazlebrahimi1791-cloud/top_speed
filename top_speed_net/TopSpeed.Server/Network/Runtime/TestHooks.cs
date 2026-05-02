@@ -11,6 +11,7 @@ namespace TopSpeed.Server.Network
         public byte PlayerNumber { get; set; }
         public ulong ResumeToken { get; set; }
         public uint? RoomId { get; set; }
+        public HandshakeState Handshake { get; set; }
         public ConnectionLifecycleState LifecycleState { get; set; }
         public PlayerState State { get; set; }
     }
@@ -59,6 +60,7 @@ namespace TopSpeed.Server.Network
                     PlayerNumber = player.PlayerNumber,
                     ResumeToken = player.ResumeToken,
                     RoomId = player.RoomId,
+                    Handshake = player.Handshake,
                     LifecycleState = player.LifecycleState,
                     State = player.State
                 };

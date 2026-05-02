@@ -18,6 +18,27 @@ namespace TopSpeed.Server.Network
             if (command == Command.KeepAlive)
                 return true;
 
+            if (player.Handshake == HandshakeState.AwaitingPlayerHello)
+            {
+                if (command != Command.PlayerHello)
+                {
+                    RejectHandshake(
+                        player,
+                        LocalizationService.Mark("Player identification is required before session initialization."));
+                    return true;
+                }
+
+                if (!PacketSerializer.TryReadPlayerHello(payload, out var playerHello))
+                {
+                    RejectHandshake(player, LocalizationService.Mark("Invalid player identification packet."));
+                    PacketFail(endPoint, Command.PlayerHello);
+                    return true;
+                }
+
+                HandlePlayerHello(player, playerHello);
+                return true;
+            }
+
             if (command != Command.ProtocolHello)
             {
                 RejectHandshake(player, LocalizationService.Format(
@@ -90,7 +111,7 @@ namespace TopSpeed.Server.Network
             if (resolvedPlayer == null)
                 return;
             player = resolvedPlayer;
-            player.Handshake = HandshakeState.Complete;
+            player.Handshake = HandshakeState.AwaitingPlayerHello;
             player.NegotiatedProtocol = compat.NegotiatedVersion;
 
             var welcome = new PacketProtocolWelcome
@@ -103,7 +124,6 @@ namespace TopSpeed.Server.Network
                 Message = BuildHandshakeMessage(compat.Status, hello.ClientVersion, serverRange)
             };
             SendStream(player, PacketSerializer.WriteProtocolWelcome(welcome), PacketStream.Control);
-            _session.SendInitialConnectionState(player);
         }
 
         private void RejectHandshake(PlayerConnection player, string message)

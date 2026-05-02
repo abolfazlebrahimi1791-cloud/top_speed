@@ -74,6 +74,9 @@
     <AndroidAsset Include="..\languages\server\**\*">
       <Link>languages/server/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </AndroidAsset>
+    <AndroidAsset Include="$(RepoDocsDir)changes.html">
+      <Link>docs/changes.html</Link>
+    </AndroidAsset>
     <AndroidAsset Include="$(RepoDocsDir)game-guide.html">
       <Link>docs/game-guide.html</Link>
     </AndroidAsset>

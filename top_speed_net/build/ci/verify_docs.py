@@ -9,6 +9,7 @@ from pathlib import Path
 
 
 REQUIRED_DOCS = (
+    "changes.html",
     "game-guide.html",
     "track-creation-guide.html",
     "vehicle-physics-and-creation-guide.html",

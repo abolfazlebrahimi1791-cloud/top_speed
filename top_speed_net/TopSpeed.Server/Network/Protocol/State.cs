@@ -3,7 +3,8 @@ namespace TopSpeed.Server.Network
     internal enum HandshakeState
     {
         Pending = 0,
-        Complete = 1,
-        Rejected = 2
+        AwaitingPlayerHello = 1,
+        Complete = 2,
+        Rejected = 3
     }
 }

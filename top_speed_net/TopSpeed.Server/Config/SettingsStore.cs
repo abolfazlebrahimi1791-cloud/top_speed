@@ -4,6 +4,7 @@ using System.Text.Json;
 using TopSpeed.Localization;
 using TopSpeed.Server.Logging;
 using TopSpeed.Server.Updates;
+using TopSpeed.Protocol;
 
 namespace TopSpeed.Server.Config
 {
@@ -67,8 +68,21 @@ namespace TopSpeed.Server.Config
             settings.Language = string.IsNullOrWhiteSpace(settings.Language)
                 ? "en"
                 : settings.Language.Trim();
+            settings.Moderation ??= new ServerModerationSettings();
+            settings.Moderation.MaxNameLength = NormalizeMaxNameLength(settings.Moderation.MaxNameLength);
             settings.UpdateRuntimeAssetTag = ServerUpdateConfig.NormalizeConfiguredRuntimeAssetTag(settings.UpdateRuntimeAssetTag);
             return settings;
+        }
+
+        private static int NormalizeMaxNameLength(int value)
+        {
+            if (value < 1)
+                return 40;
+
+            if (value > ProtocolConstants.MaxPlayerNameLength)
+                return ProtocolConstants.MaxPlayerNameLength;
+
+            return value;
         }
     }
 }

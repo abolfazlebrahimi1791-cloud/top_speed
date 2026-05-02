@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-01 03:33+0300\n"
+"POT-Creation-Date: 2026-05-02 20:11+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1263,6 +1263,10 @@ msgstr ""
 msgid "Game rules"
 msgstr ""
 
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:115
+msgid "Game rules changed."
+msgstr ""
+
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Options\Main.cs:12
 msgid "Game settings"
 msgstr ""
@@ -1350,7 +1354,7 @@ msgstr ""
 msgid "Humidity must be between 0 and 1."
 msgstr ""
 
-#: D:\top_speed\top_speed_net\TopSpeed\Game\Core\State.cs:117
+#: D:\top_speed\top_speed_net\TopSpeed\Game\Core\State.cs:120
 msgid ""
 "I really have nothing interesting to put here not even the secret to life "
 "except this really long run on sentence that is probably the most boring "
@@ -1837,6 +1841,11 @@ msgstr ""
 msgid "Maximum players allowed in this room"
 msgstr ""
 
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:82
+#, csharp-format
+msgid "Maximum players changed to {0}."
+msgstr ""
+
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Options\Speech.cs:75
 msgid ""
 "Measure your screen-reader speaking speed again so usage hints and delayed "
@@ -1957,7 +1966,7 @@ msgid "Network send failed while sending live stop."
 msgstr ""
 
 #: D:\top_speed\top_speed_net\TopSpeed\Drive\Multiplayer\Session\Runtime\Audio.cs:44
-#: D:\top_speed\top_speed_net\TopSpeed\Drive\Multiplayer\Session\Systems\Sync.cs:90
+#: D:\top_speed\top_speed_net\TopSpeed\Drive\Multiplayer\Session\Systems\Sync.cs:94
 msgid "Network send failed. Please check your connection."
 msgstr ""
 
@@ -2023,7 +2032,7 @@ msgstr ""
 msgid "No languages are available."
 msgstr ""
 
-#: D:\top_speed\top_speed_net\TopSpeed\Vehicles\RadioController\Load.cs:17
+#: D:\top_speed\top_speed_net\TopSpeed\Vehicles\RadioController\Load.cs:18
 msgid "No media file selected."
 msgstr ""
 
@@ -2153,6 +2162,11 @@ msgstr ""
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Rooms\Menu.cs:79
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Options\Drive.cs:52
 msgid "Number of laps"
+msgstr ""
+
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:77
+#, csharp-format
+msgid "Number of laps changed to {0}."
 msgstr ""
 
 #: D:\top_speed\top_speed_net\TopSpeed\Input\Display\Text.cs:59
@@ -2341,8 +2355,8 @@ msgstr ""
 msgid "Player "
 msgstr ""
 
-#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:49
-#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Coordinator\State\Rooms\Store.cs:96
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:133
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Coordinator\State\Rooms\Store.cs:104
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Rooms\Menu.cs:179
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Rooms\Online.cs:58
 #: D:\top_speed\top_speed_net\TopSpeed\Drive\Multiplayer\Session\Runtime\Results.cs:31
@@ -2458,7 +2472,7 @@ msgstr ""
 msgid "Quick start"
 msgstr ""
 
-#: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Setup.cs:107
+#: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Setup.cs:108
 msgid "Quick start."
 msgstr ""
 
@@ -2502,13 +2516,33 @@ msgstr ""
 msgid "Race complete."
 msgstr ""
 
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:118
+msgid "Race paused."
+msgstr ""
+
 #: D:\top_speed\top_speed_net\TopSpeed\Drive\Session\Text\SessionText.cs:49
 #, csharp-format
 msgid "Race percentage {0} percent"
 msgstr ""
 
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:103
+msgid "Race preparation started."
+msgstr ""
+
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:106
+msgid "Race preparation was cancelled."
+msgstr ""
+
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:121
+msgid "Race resumed."
+msgstr ""
+
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Options\Main.cs:35
 msgid "Race settings"
+msgstr ""
+
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:109
+msgid "Race started."
 msgstr ""
 
 #: D:\top_speed\top_speed_net\TopSpeed\Drive\Session\Systems\CoreRequests.cs:155
@@ -2592,7 +2626,7 @@ msgstr ""
 msgid "Recalibrate screen reader rate"
 msgstr ""
 
-#: D:\top_speed\top_speed_net\TopSpeed\Vehicles\RadioController\Load.cs:80
+#: D:\top_speed\top_speed_net\TopSpeed\Vehicles\RadioController\Load.cs:89
 msgid "Received media is empty."
 msgstr ""
 
@@ -2733,6 +2767,15 @@ msgstr ""
 msgid "Room controls"
 msgstr ""
 
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:59
+#, csharp-format
+msgid "Room created: {0}."
+msgstr ""
+
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:68
+msgid "Room host changed."
+msgstr ""
+
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Rooms\Create.cs:98
 #, csharp-format
 msgid "Room name set to {0}."
@@ -2749,6 +2792,11 @@ msgstr ""
 
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Rooms\Options.cs:105
 msgid "Room options updated."
+msgstr ""
+
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:64
+#, csharp-format
+msgid "Room removed: {0}."
 msgstr ""
 
 #: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Results\ResultCatalog.cs:44
@@ -2793,13 +2841,13 @@ msgstr ""
 msgid "Screen reader rate is not a valid number and was reset to default."
 msgstr ""
 
-#: D:\top_speed\top_speed_net\TopSpeed\Game\Core\State.cs:114
+#: D:\top_speed\top_speed_net\TopSpeed\Game\Core\State.cs:117
 msgid ""
 "Screen-reader calibration. You'll be presented with a short piece of text on "
 "the next screen. Press ENTER when your screen-reader finishes speaking it."
 msgstr ""
 
-#: D:\top_speed\top_speed_net\TopSpeed\Game\Core\State.cs:115
+#: D:\top_speed\top_speed_net\TopSpeed\Game\Core\State.cs:118
 msgid ""
 "Screen-reader calibration. You'll be presented with a short piece of text on "
 "the next screen. Swipe up when your screen-reader finishes speaking it."
@@ -3091,7 +3139,7 @@ msgstr ""
 msgid "Single race difficulty"
 msgstr ""
 
-#: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Setup.cs:108
+#: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Setup.cs:109
 msgid "Single race."
 msgstr ""
 
@@ -3447,6 +3495,10 @@ msgstr ""
 msgid "The connection attempt failed for an unknown reason."
 msgstr ""
 
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:112
+msgid "The current race was stopped."
+msgstr ""
+
 #: D:\top_speed\top_speed_net\TopSpeed\Game\Settings\Issues.cs:46
 msgid ""
 "The entire settings file could not be parsed. Defaults were loaded. Review "
@@ -3525,16 +3577,16 @@ msgid "The selected folder path is invalid."
 msgstr ""
 
 #: D:\top_speed\top_speed_net\TopSpeed\Drive\Panels\RadioPanel\Selection.cs:54
-#: D:\top_speed\top_speed_net\TopSpeed\Vehicles\RadioController\Load.cs:26
+#: D:\top_speed\top_speed_net\TopSpeed\Vehicles\RadioController\Load.cs:27
 msgid "The selected media file does not exist."
 msgstr ""
 
-#: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Setup.cs:169
+#: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Setup.cs:216
 msgid ""
 "The selected track could not be loaded. The drive session was not started."
 msgstr ""
 
-#: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Setup.cs:63
+#: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Setup.cs:64
 msgid "The selected vehicle does not support the selected transmission mode."
 msgstr ""
 
@@ -3655,7 +3707,7 @@ msgstr ""
 msgid "Time trial complete."
 msgstr ""
 
-#: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Setup.cs:88
+#: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Setup.cs:89
 msgid "Time trial."
 msgstr ""
 
@@ -3697,6 +3749,11 @@ msgid ""
 "default'."
 msgstr ""
 
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:72
+#, csharp-format
+msgid "Track changed to {0}."
+msgstr ""
+
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Core.cs:164
 msgid "Track creation guide"
 msgstr ""
@@ -3718,7 +3775,7 @@ msgstr ""
 msgid "Track lap average: {0}."
 msgstr ""
 
-#: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Setup.cs:168
+#: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Setup.cs:215
 msgid "Track load error"
 msgstr ""
 
@@ -3745,7 +3802,7 @@ msgstr ""
 msgid "Track: {0}"
 msgstr ""
 
-#: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Setup.cs:62
+#: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Setup.cs:63
 msgid "Transmission not supported"
 msgstr ""
 
@@ -3966,7 +4023,7 @@ msgstr ""
 msgid "Use motion sensors for steering"
 msgstr ""
 
-#: D:\top_speed\top_speed_net\TopSpeed\Drive\Multiplayer\Session\Network\Participants.cs:113
+#: D:\top_speed\top_speed_net\TopSpeed\Drive\Multiplayer\Session\Network\Participants.cs:135
 #: D:\top_speed\top_speed_net\TopSpeed\Drive\Session\Text\SessionText.cs:86
 #: D:\top_speed\top_speed_net\TopSpeed\Drive\Single\Session\Format.cs:35
 #: D:\top_speed\top_speed_net\TopSpeed\Vehicles\Car.cs:38
@@ -4392,7 +4449,7 @@ msgstr ""
 msgid "fixed distance"
 msgstr ""
 
-#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:57
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:141
 msgid "game room"
 msgstr ""
 
@@ -4698,6 +4755,11 @@ msgstr ""
 msgid "{0} and {1}"
 msgstr ""
 
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:93
+#, csharp-format
+msgid "{0} changed ready state."
+msgstr ""
+
 #: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Results\ResultCatalog.cs:86
 #, csharp-format
 msgid "{0} crashes."
@@ -4793,6 +4855,16 @@ msgstr ""
 #: D:\top_speed\top_speed_net\TopSpeed\Shortcuts\Mapping.cs:107
 #, csharp-format
 msgid "{0} set to {1}."
+msgstr ""
+
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:42
+#, csharp-format
+msgid "{0} was added to the current room."
+msgstr ""
+
+#: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:49
+#, csharp-format
+msgid "{0} was removed from the current room."
 msgstr ""
 
 #: D:\top_speed\top_speed_net\TopSpeed\Drive\Panels\RadioPanel\Feedback.cs:35

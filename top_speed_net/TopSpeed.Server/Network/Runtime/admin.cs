@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TopSpeed.Localization;
+using TopSpeed.Server.Config;
 
 namespace TopSpeed.Server.Network
 {
@@ -19,6 +20,17 @@ namespace TopSpeed.Server.Network
             lock (_lock)
             {
                 _config.MaxPlayers = maxPlayers;
+            }
+        }
+
+        public void SetModerationSettings(ServerModerationSettings moderation)
+        {
+            if (moderation == null)
+                return;
+
+            lock (_lock)
+            {
+                _config.Moderation = moderation.Clone();
             }
         }
 

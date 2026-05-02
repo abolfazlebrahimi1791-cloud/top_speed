@@ -1,5 +1,6 @@
 using System;
 using TopSpeed.Data;
+using TopSpeed.Localization;
 using TopSpeed.Protocol;
 
 namespace TopSpeed.Server.Protocol
@@ -155,7 +156,8 @@ namespace TopSpeed.Server.Protocol
             writer.WriteByte(ProtocolConstants.Version);
             writer.WriteByte((byte)Command.ProtocolMessage);
             writer.WriteByte((byte)message.Code);
-            writer.WriteFixedString(message.Message ?? string.Empty, ProtocolConstants.MaxProtocolMessageLength);
+            var translated = LocalizationService.Translate(message.Message ?? string.Empty);
+            writer.WriteFixedString(translated, ProtocolConstants.MaxProtocolMessageLength);
             return buffer;
         }
 
@@ -171,7 +173,8 @@ namespace TopSpeed.Server.Protocol
             var writer = new PacketWriter(buffer);
             writer.WriteByte(ProtocolConstants.Version);
             writer.WriteByte((byte)Command.Disconnect);
-            writer.WriteFixedString(message ?? string.Empty, ProtocolConstants.MaxProtocolDetailsLength);
+            var translated = LocalizationService.Translate(message ?? string.Empty);
+            writer.WriteFixedString(translated, ProtocolConstants.MaxProtocolDetailsLength);
             return buffer;
         }
 

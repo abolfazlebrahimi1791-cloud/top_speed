@@ -4,6 +4,7 @@ using System.Net;
 using Bogus;
 using TopSpeed.Protocol;
 using TopSpeed.Server.Logging;
+using TopSpeed.Server.Config;
 
 namespace TopSpeed.Server.Network
 {
@@ -66,6 +67,7 @@ namespace TopSpeed.Server.Network
         public RaceServer(RaceServerConfig config, Logger logger)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
+            _config.Moderation ??= new ServerModerationSettings();
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _transport = new UdpServerTransport(_logger);
             _pktReg = new ServerPktReg();
