@@ -186,17 +186,17 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0' and '$(RuntimeIdentifier)' == 'osx-x64'">
-    <Content Include="ThirdParty\mac\x64\libphonon.dylib">
+    <Content Include="ThirdParty\mac\x64\libphonon.dylib" Condition="Exists('$(MSBuildThisFileDirectory)ThirdParty\mac\x64\libphonon.dylib')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <TargetPath>lib\libphonon.dylib</TargetPath>
     </Content>
-    <Content Include="ThirdParty\mac\x64\libprism.dylib">
+    <Content Include="ThirdParty\mac\x64\libprism.dylib" Condition="Exists('$(MSBuildThisFileDirectory)ThirdParty\mac\x64\libprism.dylib')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <TargetPath>lib\libprism.dylib</TargetPath>
     </Content>
-    <Content Include="ThirdParty\mac\x64\libSDL3.dylib">
+    <Content Include="ThirdParty\mac\x64\libSDL3.dylib" Condition="Exists('$(MSBuildThisFileDirectory)ThirdParty\mac\x64\libSDL3.dylib')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <TargetPath>lib\libSDL3.dylib</TargetPath>
@@ -223,17 +223,17 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0' and '$(RuntimeIdentifier)' == 'osx-arm64'">
-    <Content Include="$(MacArmPhononPath)">
+    <Content Include="$(MacArmPhononPath)" Condition="Exists('$(MSBuildThisFileDirectory)$(MacArmPhononPath)')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <TargetPath>lib\libphonon.dylib</TargetPath>
     </Content>
-    <Content Include="$(MacArmPrismPath)">
+    <Content Include="$(MacArmPrismPath)" Condition="Exists('$(MSBuildThisFileDirectory)$(MacArmPrismPath)')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <TargetPath>lib\libprism.dylib</TargetPath>
     </Content>
-    <Content Include="$(MacArmSdlPath)">
+    <Content Include="$(MacArmSdlPath)" Condition="Exists('$(MSBuildThisFileDirectory)$(MacArmSdlPath)')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <TargetPath>lib\libSDL3.dylib</TargetPath>

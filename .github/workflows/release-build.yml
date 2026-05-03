@@ -15,12 +15,11 @@ jobs:
       server_version: ${{ steps.release_info.outputs.server_version }}
       game_zip_win: ${{ steps.release_info.outputs.game_zip_win }}
       game_zip_linux: ${{ steps.release_info.outputs.game_zip_linux }}
-      game_zip_osx: ${{ steps.release_info.outputs.game_zip_osx }}
+      game_zip_mac_x64: ${{ steps.release_info.outputs.game_zip_mac_x64 }}
+      game_zip_mac_arm64: ${{ steps.release_info.outputs.game_zip_mac_arm64 }}
       game_apk_android_arm64: ${{ steps.release_info.outputs.game_apk_android_arm64 }}
       game_apk_android_arm32: ${{ steps.release_info.outputs.game_apk_android_arm32 }}
       android_version_code: ${{ steps.release_info.outputs.android_version_code }}
-      game_zip_glob: ${{ steps.release_info.outputs.game_zip_glob }}
-      server_zip_glob: ${{ steps.release_info.outputs.server_zip_glob }}
       changes_md: ${{ steps.release_info.outputs.changes_md }}
       server_changes_md: ${{ steps.release_info.outputs.server_changes_md }}
     steps:
@@ -92,12 +91,11 @@ jobs:
           "server_version=$serverVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "game_zip_win=TopSpeed-windows-x64-Release-v-$version.zip" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "game_zip_linux=TopSpeed-linux-x64-Release-v-$version.zip" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
-          "game_zip_osx=TopSpeed-mac-arm64-Release-v-$version.zip" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "game_zip_mac_x64=TopSpeed-mac-x64-Release-v-$version.zip" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "game_zip_mac_arm64=TopSpeed-mac-arm64-Release-v-$version.zip" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "game_apk_android_arm64=TopSpeed-android-arm64-Release-v-$version.apk" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "game_apk_android_arm32=TopSpeed-android-arm-Release-v-$version.apk" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "android_version_code=$androidVersionCode" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
-          "game_zip_glob=TopSpeed-*-Release-v-$version.zip" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
-          "server_zip_glob=TopSpeed.Server-*-Release-v-$serverVersion.zip" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "changes_md<<EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           $changes | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
@@ -105,38 +103,23 @@ jobs:
           $serverChanges | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
-  build:
-    name: Build ${{ matrix.platform_name }}
+  build_windows:
+    name: Build Windows ${{ matrix.target_name }}
     needs: metadata
-    runs-on: ${{ matrix.runs_on }}
+    runs-on: windows-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          - platform: windows
-            platform_name: Windows
-            runs_on: windows-latest
-            install_java: "false"
-            install_android_workload: "false"
-            artifact_name: release-assets-windows
-          - platform: linux
-            platform_name: Linux
-            runs_on: ubuntu-latest
-            install_java: "false"
-            install_android_workload: "false"
-            artifact_name: release-assets-linux
-          - platform: macos
-            platform_name: macOS ARM64
-            runs_on: macos-latest
-            install_java: "false"
-            install_android_workload: "false"
-            artifact_name: release-assets-macos
-          - platform: android
-            platform_name: Android
-            runs_on: ubuntu-latest
-            install_java: "true"
-            install_android_workload: "true"
-            artifact_name: release-assets-android
+          - target_name: Game win-x64
+            kind: game
+            artifact_name: release-assets-game-win-x64
+          - target_name: Server win-x64
+            kind: server
+            publish_profile: ReleaseWinX64
+            publish_dir: win-x64
+            server_tag: win-x64
+            artifact_name: release-assets-server-win-x64
     defaults:
       run:
         working-directory: top_speed_net
@@ -152,15 +135,307 @@ jobs:
           python-version: "3.x"
           install-python-deps: "true"
           python-packages: markdown
-          install-java: ${{ matrix.install_java }}
+          install-java: "false"
+          java-version: "21"
+
+      - name: Build and package Windows target
+        id: package_windows
+        shell: pwsh
+        env:
+          VERSION: ${{ needs.metadata.outputs.version }}
+          SERVER_VERSION: ${{ needs.metadata.outputs.server_version }}
+        run: |
+          $kind = "${{ matrix.kind }}"
+
+          if ($kind -eq "game") {
+            dotnet restore TopSpeed/TopSpeed.csproj --framework net10.0-windows --runtime win-x64
+            dotnet restore TopSpeed.Tests/TopSpeed.Tests.csproj
+            dotnet build TopSpeed.Tests/TopSpeed.Tests.csproj --configuration Release --framework net10.0-windows --no-restore
+            dotnet test TopSpeed.Tests/TopSpeed.Tests.csproj --configuration Release --framework net10.0-windows --no-build --verbosity normal
+            dotnet build TopSpeed/TopSpeed.csproj --configuration Release --framework net10.0-windows --runtime win-x64 --no-restore
+
+            $zipName = "TopSpeed-windows-x64-Release-v-$env:VERSION.zip"
+            if (Test-Path $zipName) { Remove-Item $zipName -Force }
+            Compress-Archive -Path "TopSpeed\bin\Release\net10.0\win-x64\*" -DestinationPath $zipName -CompressionLevel Optimal
+            python build/ci/verify_docs.py --archive $zipName --prefix docs
+          } elseif ($kind -eq "server") {
+            dotnet restore TopSpeed.Server/TopSpeed.Server.csproj
+            dotnet publish TopSpeed.Server/TopSpeed.Server.csproj --configuration Release -p:ServerPublishProfile=${{ matrix.publish_profile }} -p:UseNativeAotUpdater=false -p:UseTrimmedUpdater=false
+
+            $zipName = "TopSpeed.Server-${{ matrix.server_tag }}-Release-v-$env:SERVER_VERSION.zip"
+            if (Test-Path $zipName) { Remove-Item $zipName -Force }
+            Compress-Archive -Path "TopSpeed.Server\bin\Publish\${{ matrix.publish_dir }}\*" -DestinationPath $zipName -CompressionLevel Optimal
+          } else {
+            throw "Unknown Windows matrix kind '$kind'."
+          }
+
+          "artifact_paths<<EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "top_speed_net/$zipName" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          if-no-files-found: error
+          path: ${{ steps.package_windows.outputs.artifact_paths }}
+
+  build_mac:
+    name: Build macOS ${{ matrix.target_name }}
+    needs: metadata
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target_name: Game mac-x64
+            kind: game
+            runtime_id: osx-x64
+            game_arch_tag: x64
+            artifact_name: release-assets-game-mac-x64
+          - target_name: Game mac-arm64
+            kind: game
+            runtime_id: osx-arm64
+            game_arch_tag: arm64
+            artifact_name: release-assets-game-mac-arm64
+          - target_name: Server mac-x64
+            kind: server
+            publish_profile: ReleaseMacX64
+            publish_dir: mac-x64
+            server_tag: mac-x64
+            artifact_name: release-assets-server-mac-x64
+          - target_name: Server mac-arm64
+            kind: server
+            publish_profile: ReleaseMacArm64
+            publish_dir: mac-arm64
+            server_tag: mac-arm64
+            artifact_name: release-assets-server-mac-arm64
+    defaults:
+      run:
+        working-directory: top_speed_net
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup build environment
+        uses: ./.github/actions/setup-build-env
+        with:
+          dotnet-version: 10.0.x
+          python-version: "3.x"
+          install-python-deps: "true"
+          python-packages: markdown
+          install-java: "false"
+          java-version: "21"
+
+      - name: Build and package macOS target
+        id: package_mac
+        shell: bash
+        env:
+          VERSION: ${{ needs.metadata.outputs.version }}
+          SERVER_VERSION: ${{ needs.metadata.outputs.server_version }}
+        run: |
+          set -euo pipefail
+
+          kind="${{ matrix.kind }}"
+          if [[ "$kind" == "game" ]]; then
+            rid="${{ matrix.runtime_id }}"
+            zip_name="TopSpeed-mac-${{ matrix.game_arch_tag }}-Release-v-$VERSION.zip"
+
+            dotnet restore TopSpeed/TopSpeed.csproj --framework net10.0 --runtime "$rid"
+            dotnet publish TopSpeed/TopSpeed.csproj --configuration Release --framework net10.0 --runtime "$rid" -p:UseNativeAotUpdater=true -p:UseTrimmedUpdater=false --no-restore
+
+            rm -f "$zip_name"
+            (
+              cd "TopSpeed/bin/Publish/$rid"
+              /usr/bin/ditto -c -k --sequesterRsrc --keepParent TopSpeed.app "$GITHUB_WORKSPACE/top_speed_net/$zip_name"
+            )
+            python build/ci/verify_docs.py --archive "$zip_name" --prefix TopSpeed.app/Contents/MacOS/docs
+          elif [[ "$kind" == "server" ]]; then
+            profile="${{ matrix.publish_profile }}"
+            publish_dir="${{ matrix.publish_dir }}"
+            zip_name="TopSpeed.Server-${{ matrix.server_tag }}-Release-v-$SERVER_VERSION.zip"
+
+            dotnet restore TopSpeed.Server/TopSpeed.Server.csproj
+            dotnet publish TopSpeed.Server/TopSpeed.Server.csproj --configuration Release -p:ServerPublishProfile="$profile" -p:UseNativeAotUpdater=true -p:UseTrimmedUpdater=false
+
+            rm -f "$zip_name"
+            (
+              cd "TopSpeed.Server/bin/Publish/$publish_dir"
+              zip -rq "$GITHUB_WORKSPACE/top_speed_net/$zip_name" .
+            )
+          else
+            echo "Unknown macOS matrix kind '$kind'." >&2
+            exit 1
+          fi
+
+          {
+            echo "artifact_paths<<EOF"
+            echo "top_speed_net/$zip_name"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          if-no-files-found: error
+          path: ${{ steps.package_mac.outputs.artifact_paths }}
+
+  build_linux:
+    name: Build Linux ${{ matrix.target_name }}
+    needs: metadata
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target_name: Game linux-x64
+            kind: game
+            artifact_name: release-assets-game-linux-x64
+          - target_name: Server linux-x64
+            kind: server
+            publish_profile: ReleaseLinuxX64
+            publish_dir: linux-x64
+            server_tag: linux-x64
+            artifact_name: release-assets-server-linux-x64
+          - target_name: Server linux-arm64
+            kind: server
+            publish_profile: ReleaseLinuxArm64
+            publish_dir: linux-arm64
+            server_tag: linux-arm64
+            artifact_name: release-assets-server-linux-arm64
+          - target_name: Server linux-arm32
+            kind: server
+            publish_profile: ReleaseLinuxArm32
+            publish_dir: linux-arm32
+            server_tag: linux-arm32
+            artifact_name: release-assets-server-linux-arm32
+          - target_name: Server linux-musl-x64
+            kind: server
+            publish_profile: ReleaseLinuxMuslX64
+            publish_dir: linux-musl-x64
+            server_tag: linux-musl-x64
+            artifact_name: release-assets-server-linux-musl-x64
+          - target_name: Server linux-musl-arm64
+            kind: server
+            publish_profile: ReleaseLinuxMuslArm64
+            publish_dir: linux-musl-arm64
+            server_tag: linux-musl-arm64
+            artifact_name: release-assets-server-linux-musl-arm64
+          - target_name: Server linux-x86-fdd
+            kind: server
+            publish_profile: ReleaseLinuxX86FrameworkDependent
+            publish_dir: linux-x86-fdd
+            server_tag: linux-x86-fdd
+            artifact_name: release-assets-server-linux-x86-fdd
+    defaults:
+      run:
+        working-directory: top_speed_net
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup build environment
+        uses: ./.github/actions/setup-build-env
+        with:
+          dotnet-version: 10.0.x
+          python-version: "3.x"
+          install-python-deps: "true"
+          python-packages: markdown
+          install-java: "false"
+          java-version: "21"
+
+      - name: Build and package Linux target
+        id: package_linux
+        shell: bash
+        env:
+          VERSION: ${{ needs.metadata.outputs.version }}
+          SERVER_VERSION: ${{ needs.metadata.outputs.server_version }}
+        run: |
+          set -euo pipefail
+
+          kind="${{ matrix.kind }}"
+          if [[ "$kind" == "game" ]]; then
+            zip_name="TopSpeed-linux-x64-Release-v-$VERSION.zip"
+
+            dotnet restore TopSpeed/TopSpeed.csproj --framework net10.0 --runtime linux-x64
+            dotnet build TopSpeed/TopSpeed.csproj --configuration Release --framework net10.0 --runtime linux-x64 -p:UseNativeAotUpdater=false -p:UseTrimmedUpdater=true --no-restore
+
+            rm -f "$zip_name"
+            (
+              cd TopSpeed/bin/Release/net10.0/linux-x64
+              zip -rq "$GITHUB_WORKSPACE/top_speed_net/$zip_name" .
+            )
+            python build/ci/verify_docs.py --archive "$zip_name" --prefix docs
+          elif [[ "$kind" == "server" ]]; then
+            profile="${{ matrix.publish_profile }}"
+            publish_dir="${{ matrix.publish_dir }}"
+            zip_name="TopSpeed.Server-${{ matrix.server_tag }}-Release-v-$SERVER_VERSION.zip"
+
+            dotnet restore TopSpeed.Server/TopSpeed.Server.csproj
+            dotnet publish TopSpeed.Server/TopSpeed.Server.csproj --configuration Release -p:ServerPublishProfile="$profile" -p:UseNativeAotUpdater=false -p:UseTrimmedUpdater=true
+
+            rm -f "$zip_name"
+            (
+              cd "TopSpeed.Server/bin/Publish/$publish_dir"
+              zip -rq "$GITHUB_WORKSPACE/top_speed_net/$zip_name" .
+            )
+          else
+            echo "Unknown Linux matrix kind '$kind'." >&2
+            exit 1
+          fi
+
+          {
+            echo "artifact_paths<<EOF"
+            echo "top_speed_net/$zip_name"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          if-no-files-found: error
+          path: ${{ steps.package_linux.outputs.artifact_paths }}
+
+  build_android:
+    name: Build Android ${{ matrix.target_name }}
+    needs: metadata
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target_name: android-arm64
+            runtime_id: android-arm64
+            artifact_name: release-assets-android-arm64
+          - target_name: android-arm
+            runtime_id: android-arm
+            artifact_name: release-assets-android-arm
+    defaults:
+      run:
+        working-directory: top_speed_net
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup build environment
+        uses: ./.github/actions/setup-build-env
+        with:
+          dotnet-version: 10.0.x
+          python-version: "3.x"
+          install-python-deps: "true"
+          python-packages: markdown
+          install-java: "true"
           java-version: "21"
 
       - name: Install Android workload
-        if: matrix.install_android_workload == 'true'
         run: dotnet workload install android
 
       - name: Prepare Android signing keystore
-        if: matrix.platform == 'android'
         shell: pwsh
         env:
           ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
@@ -172,66 +447,71 @@ jobs:
           $keystorePath = Join-Path $PWD "TopSpeed.Android/top_speed.p12"
           [System.IO.File]::WriteAllBytes($keystorePath, [System.Convert]::FromBase64String($env:ANDROID_KEYSTORE_B64))
 
-      - name: Build and package platform artifacts
-        id: platform_build
-        shell: pwsh
+      - name: Build and package Android target
+        id: package_android
+        shell: bash
         env:
           VERSION: ${{ needs.metadata.outputs.version }}
-          SERVER_VERSION: ${{ needs.metadata.outputs.server_version }}
           ANDROID_VERSION_CODE: ${{ needs.metadata.outputs.android_version_code }}
-          GAME_ZIP_WIN: ${{ needs.metadata.outputs.game_zip_win }}
-          GAME_ZIP_LINUX: ${{ needs.metadata.outputs.game_zip_linux }}
-          GAME_ZIP_OSX: ${{ needs.metadata.outputs.game_zip_osx }}
-          GAME_APK_ANDROID_ARM64: ${{ needs.metadata.outputs.game_apk_android_arm64 }}
-          GAME_APK_ANDROID_ARM32: ${{ needs.metadata.outputs.game_apk_android_arm32 }}
           ANDROID_KEY_PASS: ${{ secrets.ANDROID_KEY_PASS }}
         run: |
-          $platform = "${{ matrix.platform }}"
-          $serverZipWin = "TopSpeed.Server-win-x64-Release-v-$env:SERVER_VERSION.zip"
-          $serverZipMac = "TopSpeed.Server-mac-arm64-Release-v-$env:SERVER_VERSION.zip"
+          set -euo pipefail
 
-          if ($platform -eq "windows") {
-            ./build/ci/windows.ps1 `
-              -Version $env:VERSION `
-              -ServerVersion $env:SERVER_VERSION `
-              -GameZip $env:GAME_ZIP_WIN `
-              -ServerZip $serverZipWin
-            exit $LASTEXITCODE
-          }
+          if [[ -z "${ANDROID_KEY_PASS:-}" ]]; then
+            echo "Missing Android signing password secret ANDROID_KEY_PASS." >&2
+            exit 1
+          fi
 
-          if ($platform -eq "linux") {
-            bash build/ci/linux.sh "$env:VERSION" "$env:SERVER_VERSION" "$env:GAME_ZIP_LINUX"
-            exit $LASTEXITCODE
-          }
+          rid="${{ matrix.runtime_id }}"
+          dotnet restore TopSpeed.Android/TopSpeed.Android.csproj
+          dotnet publish TopSpeed.Android/TopSpeed.Android.csproj \
+            --configuration Release \
+            --framework net10.0-android \
+            --runtime "$rid" \
+            -p:AndroidPackageFormat=apk \
+            -p:ApplicationDisplayVersion="$VERSION" \
+            -p:ApplicationVersion="$ANDROID_VERSION_CODE"
 
-          if ($platform -eq "macos") {
-            bash build/ci/macos.sh "$env:VERSION" "$env:SERVER_VERSION" "$env:GAME_ZIP_OSX" "$serverZipMac"
-            exit $LASTEXITCODE
-          }
+          if [[ "$rid" == "android-arm64" ]]; then
+            apk_name="TopSpeed-android-arm64-Release-v-$VERSION.apk"
+          else
+            apk_name="TopSpeed-android-arm-Release-v-$VERSION.apk"
+          fi
 
-          if ($platform -eq "android") {
-            if ([string]::IsNullOrWhiteSpace($env:ANDROID_KEY_PASS)) {
-              throw "Missing Android signing password secret ANDROID_KEY_PASS."
-            }
+          rid_root="TopSpeed.Android/bin/Release/net10.0-android/$rid"
+          apk_path="$(find "$rid_root" -type f -name '*Signed.apk' | sort | head -n 1)"
+          if [[ -z "$apk_path" ]]; then
+            apk_path="$(find "$rid_root" -type f -name '*.apk' ! -name '*unaligned*' | sort | head -n 1)"
+          fi
+          if [[ -z "$apk_path" ]]; then
+            echo "No APK produced for runtime '$rid'." >&2
+            exit 1
+          fi
 
-            bash build/ci/android.sh "$env:VERSION" "$env:ANDROID_VERSION_CODE" "$env:GAME_APK_ANDROID_ARM64" "$env:GAME_APK_ANDROID_ARM32"
-            exit $LASTEXITCODE
-          }
+          cp "$apk_path" "$apk_name"
+          python build/ci/verify_docs.py --archive "$apk_name" --prefix assets/docs
 
-          throw "Unknown matrix platform '$platform'."
+          {
+            echo "artifact_paths<<EOF"
+            echo "top_speed_net/$apk_name"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
-      - name: Upload platform artifacts
+      - name: Upload Android artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact_name }}
           if-no-files-found: error
-          path: ${{ steps.platform_build.outputs.artifact_paths }}
+          path: ${{ steps.package_android.outputs.artifact_paths }}
 
   release:
     name: Publish Release
     needs:
       - metadata
-      - build
+      - build_windows
+      - build_mac
+      - build_linux
+      - build_android
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -253,8 +533,21 @@ jobs:
         run: |
           set -euo pipefail
           find release-assets -type f \( -name '*.zip' -o -name '*.apk' \) | sort
+          test -f "release-assets/${{ needs.metadata.outputs.game_zip_win }}"
+          test -f "release-assets/${{ needs.metadata.outputs.game_zip_linux }}"
+          test -f "release-assets/${{ needs.metadata.outputs.game_zip_mac_x64 }}"
+          test -f "release-assets/${{ needs.metadata.outputs.game_zip_mac_arm64 }}"
           test -f "release-assets/${{ needs.metadata.outputs.game_apk_android_arm64 }}"
           test -f "release-assets/${{ needs.metadata.outputs.game_apk_android_arm32 }}"
+          test -f "release-assets/TopSpeed.Server-win-x64-Release-v-${{ needs.metadata.outputs.server_version }}.zip"
+          test -f "release-assets/TopSpeed.Server-linux-x64-Release-v-${{ needs.metadata.outputs.server_version }}.zip"
+          test -f "release-assets/TopSpeed.Server-linux-arm64-Release-v-${{ needs.metadata.outputs.server_version }}.zip"
+          test -f "release-assets/TopSpeed.Server-linux-arm32-Release-v-${{ needs.metadata.outputs.server_version }}.zip"
+          test -f "release-assets/TopSpeed.Server-linux-musl-x64-Release-v-${{ needs.metadata.outputs.server_version }}.zip"
+          test -f "release-assets/TopSpeed.Server-linux-musl-arm64-Release-v-${{ needs.metadata.outputs.server_version }}.zip"
+          test -f "release-assets/TopSpeed.Server-linux-x86-fdd-Release-v-${{ needs.metadata.outputs.server_version }}.zip"
+          test -f "release-assets/TopSpeed.Server-mac-x64-Release-v-${{ needs.metadata.outputs.server_version }}.zip"
+          test -f "release-assets/TopSpeed.Server-mac-arm64-Release-v-${{ needs.metadata.outputs.server_version }}.zip"
 
       - name: Generate Commit Log
         id: changelog
