@@ -437,28 +437,12 @@ namespace TopSpeed.Core.Multiplayer
 
         private static TrackPackageRef CloneTrackRef(TrackPackageRef track)
         {
-            if (track == null)
-                return TrackPackageRef.BuiltIn(string.Empty);
-
-            return track.IsCustomPackage
-                ? TrackPackageRef.Custom(track.TrackId ?? string.Empty, track.Version ?? string.Empty, track.Hash ?? string.Empty)
-                : TrackPackageRef.BuiltIn(track.BuiltInTrackKey ?? string.Empty);
+            return TrackPackageRef.Clone(track);
         }
 
         private static bool TrackRefsEqual(TrackPackageRef left, TrackPackageRef right)
         {
-            var a = CloneTrackRef(left);
-            var b = CloneTrackRef(right);
-            if (a.Kind != b.Kind)
-                return false;
-            if (a.IsCustomPackage)
-            {
-                return string.Equals(a.TrackId, b.TrackId, StringComparison.OrdinalIgnoreCase)
-                    && string.Equals(a.Version, b.Version, StringComparison.OrdinalIgnoreCase)
-                    && string.Equals(TrackPackageRef.NormalizeHash(a.Hash), TrackPackageRef.NormalizeHash(b.Hash), StringComparison.OrdinalIgnoreCase);
-            }
-
-            return string.Equals(a.BuiltInTrackKey, b.BuiltInTrackKey, StringComparison.OrdinalIgnoreCase);
+            return TrackPackageRef.AreEqual(left, right);
         }
 
         private static string FormatTrackRefDisplay(TrackPackageRef track)

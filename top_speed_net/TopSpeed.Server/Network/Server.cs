@@ -36,8 +36,8 @@ namespace TopSpeed.Server.Network
         private readonly Dictionary<uint, PlayerConnection> _players = new Dictionary<uint, PlayerConnection>();
         private readonly Dictionary<string, uint> _endpointIndex = new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<uint, RaceRoom> _rooms = new Dictionary<uint, RaceRoom>();
-        private readonly Dictionary<string, TrackPackageRecord> _trackPackageCache = new Dictionary<string, TrackPackageRecord>(StringComparer.OrdinalIgnoreCase);
-        private readonly Dictionary<uint, TrackPackageUploadSession> _trackPackageUploads = new Dictionary<uint, TrackPackageUploadSession>();
+        private readonly Dictionary<string, PackageRecord> _trackPackageCache = new Dictionary<string, PackageRecord>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<uint, PackageUploadSession> _trackPackageUploads = new Dictionary<uint, PackageUploadSession>();
         private readonly Faker _faker = new Faker();
         private readonly Random _random = new Random();
 
@@ -88,3 +88,4 @@ namespace TopSpeed.Server.Network
         }
     }
 }
+

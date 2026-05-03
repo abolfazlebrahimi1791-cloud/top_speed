@@ -214,14 +214,6 @@ namespace TopSpeed.Protocol
         Expired = 4
     }
 
-    public enum TrackPackageUploadStatus : byte
-    {
-        None = 0,
-        Accepted = 1,
-        Reused = 2,
-        Rejected = 3
-    }
-
     public enum ConnectionLifecycleState : byte
     {
         Connected = 0,

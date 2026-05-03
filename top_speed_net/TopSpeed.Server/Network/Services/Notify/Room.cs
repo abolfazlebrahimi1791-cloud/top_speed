@@ -228,13 +228,7 @@ namespace TopSpeed.Server.Network
 
             private static TrackPackageRef CloneTrackRef(TrackPackageRef track)
             {
-                if (track == null)
-                    return TrackPackageRef.BuiltIn(string.Empty);
-
-                if (track.IsCustomPackage)
-                    return TrackPackageRef.Custom(track.TrackId, track.Version, track.Hash);
-
-                return TrackPackageRef.BuiltIn(track.BuiltInTrackKey);
+                return TrackPackageRef.Clone(track);
             }
         }
     }

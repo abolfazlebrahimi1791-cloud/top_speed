@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using TopSpeed.Network;
 using TopSpeed.Protocol;
+using TopSpeed.Server.Protocol;
 using TopSpeed.Data;
 using Xunit;
 
@@ -162,6 +163,120 @@ public sealed class TrackPackageBehaviorTests
     }
 
     [Fact]
+    public void TrackPackageUploadBegin_ShouldRoundTripBetweenClientAndServer()
+    {
+        var packet = new PacketTrackPackageUploadBegin
+        {
+            UploadId = 77,
+            TrackId = "city-loop",
+            Version = "1.3",
+            Hash = "AABBCCDD",
+            TotalBytes = 2048
+        };
+
+        var payload = ClientPacketSerializer.WriteTrackPackageUploadBegin(packet);
+        PacketSerializer.TryReadTrackPackageUploadBegin(payload, out var parsed).Should().BeTrue();
+        parsed.UploadId.Should().Be((uint)77);
+        parsed.TrackId.Should().Be("city-loop");
+        parsed.Version.Should().Be("1.3");
+        parsed.Hash.Should().Be("aabbccdd");
+        parsed.TotalBytes.Should().Be((uint)2048);
+    }
+
+    [Fact]
+    public void TrackPackageUploadChunk_ShouldRoundTripBetweenClientAndServer()
+    {
+        var packet = new PacketTrackPackageUploadChunk
+        {
+            UploadId = 44,
+            ChunkIndex = 5,
+            Data = new byte[] { 1, 2, 3, 4 }
+        };
+
+        var payload = ClientPacketSerializer.WriteTrackPackageUploadChunk(packet);
+        PacketSerializer.TryReadTrackPackageUploadChunk(payload, out var parsed).Should().BeTrue();
+        parsed.UploadId.Should().Be((uint)44);
+        parsed.ChunkIndex.Should().Be((ushort)5);
+        parsed.Data.Should().Equal(new byte[] { 1, 2, 3, 4 });
+    }
+
+    [Fact]
+    public void TrackPackageUploadEnd_ShouldRoundTripBetweenClientAndServer()
+    {
+        var packet = new PacketTrackPackageUploadEnd
+        {
+            UploadId = 12
+        };
+
+        var payload = ClientPacketSerializer.WriteTrackPackageUploadEnd(packet);
+        PacketSerializer.TryReadTrackPackageUploadEnd(payload, out var parsed).Should().BeTrue();
+        parsed.UploadId.Should().Be((uint)12);
+    }
+
+    [Fact]
+    public void TrackPackageUploadResult_ShouldRoundTripBetweenServerAndClient()
+    {
+        var packet = new PacketTrackPackageUploadResult
+        {
+            UploadId = 99,
+            Status = TrackPackageUploadStatus.Reused,
+            Hash = "ABC123",
+            Message = "reused"
+        };
+
+        var payload = PacketSerializer.WriteTrackPackageUploadResult(packet);
+        ClientPacketSerializer.TryReadTrackPackageUploadResult(payload, out var parsed).Should().BeTrue();
+        parsed.UploadId.Should().Be((uint)99);
+        parsed.Status.Should().Be(TrackPackageUploadStatus.Reused);
+        parsed.Hash.Should().Be("abc123");
+        parsed.Message.Should().Be("reused");
+    }
+
+    [Fact]
+    public void TrackPackageTransferBegin_ShouldRoundTripBetweenServerAndClient()
+    {
+        var packet = new PacketTrackPackageTransferBegin
+        {
+            TrackId = "desert-run",
+            Version = "2.0",
+            Hash = "FF00AA",
+            TotalBytes = 8192
+        };
+
+        var payload = PacketSerializer.WriteTrackPackageTransferBegin(packet);
+        ClientPacketSerializer.TryReadTrackPackageTransferBegin(payload, out var parsed).Should().BeTrue();
+        parsed.TrackId.Should().Be("desert-run");
+        parsed.Version.Should().Be("2.0");
+        parsed.Hash.Should().Be("ff00aa");
+        parsed.TotalBytes.Should().Be((uint)8192);
+    }
+
+    [Fact]
+    public void TrackPackageTransferEnd_ShouldRoundTripBetweenServerAndClient()
+    {
+        var packet = new PacketTrackPackageTransferEnd
+        {
+            Hash = "AA11BB22"
+        };
+
+        var payload = PacketSerializer.WriteTrackPackageTransferEnd(packet);
+        ClientPacketSerializer.TryReadTrackPackageTransferEnd(payload, out var parsed).Should().BeTrue();
+        parsed.Hash.Should().Be("aa11bb22");
+    }
+
+    [Fact]
+    public void TrackPackageReady_ShouldRoundTripBetweenClientAndServer()
+    {
+        var payload = ClientPacketSerializer.WriteTrackPackageReady(new PacketTrackPackageReady
+        {
+            Hash = "CAFEBABE"
+        });
+
+        PacketSerializer.TryReadTrackPackageReady(payload, out var parsed).Should().BeTrue();
+        parsed.Hash.Should().Be("cafebabe");
+    }
+
+    [Fact]
     public void TrackPackageCatalog_ShouldRoundTrip()
     {
         var packet = new PacketTrackPackageCatalog
@@ -195,5 +310,12 @@ public sealed class TrackPackageBehaviorTests
     {
         var payload = ClientPacketSerializer.WriteTrackPackageCatalogRequest();
         ClientPacketSerializer.TryReadTrackPackageCatalogRequest(payload, out _).Should().BeTrue();
+    }
+
+    [Fact]
+    public void TrackPackageCodec_ShouldRejectMalformedPayload()
+    {
+        TrackPackageCodec.TryDeserialize(new byte[] { 1, 2, 3 }, out _, out var error).Should().BeFalse();
+        error.Should().NotBeNullOrWhiteSpace();
     }
 }

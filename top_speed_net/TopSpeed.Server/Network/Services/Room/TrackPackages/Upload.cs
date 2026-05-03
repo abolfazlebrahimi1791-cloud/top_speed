@@ -7,28 +7,7 @@ namespace TopSpeed.Server.Network
     {
         private sealed partial class Room
         {
-            private bool IsCustomTrackSelectionEnabled(RaceRoom room)
-            {
-                return room != null
-                    && _owner._config.Features.CustomTracks
-                    && (room.GameRulesFlags & (uint)RoomGameRules.CustomTracks) != 0u;
-            }
-
-            public void HandleTrackPackageCatalogRequest(PlayerConnection player, PacketTrackPackageCatalogRequest packet)
-            {
-                if (!TryGetHosted(player, out var room))
-                    return;
-
-                if (!_owner._config.Features.CustomTracks || !IsCustomTrackSelectionEnabled(room))
-                {
-                    _owner.SendTrackPackageCatalog(player, new PacketTrackPackageCatalog());
-                    return;
-                }
-
-                _owner.SendTrackPackageCatalog(player, _owner.BuildTrackPackageCatalog());
-            }
-
-            public void HandleTrackPackageUploadBegin(PlayerConnection player, PacketTrackPackageUploadBegin packet)
+            public void HandleUploadBegin(PlayerConnection player, PacketTrackPackageUploadBegin packet)
             {
                 if (!TryGetHosted(player, out var room))
                     return;
@@ -37,7 +16,7 @@ namespace TopSpeed.Server.Network
                     _owner.SendTrackPackageUploadResult(player, packet.UploadId, TrackPackageUploadStatus.Rejected, packet.Hash, LocalizationService.Mark("Custom tracks are disabled on this server."));
                     return;
                 }
-                if (!IsCustomTrackSelectionEnabled(room))
+                if (!IsSelectionEnabled(room))
                 {
                     _owner.SendTrackPackageUploadResult(player, packet.UploadId, TrackPackageUploadStatus.Rejected, packet.Hash, LocalizationService.Mark("Custom tracks are not enabled for this room."));
                     return;
@@ -55,7 +34,7 @@ namespace TopSpeed.Server.Network
                     return;
                 }
 
-                _owner._trackPackageUploads[player.Id] = new TrackPackageUploadSession
+                _owner._trackPackageUploads[player.Id] = new PackageUploadSession
                 {
                     UploadId = packet.UploadId,
                     OwnerPlayerId = player.Id,
@@ -70,7 +49,7 @@ namespace TopSpeed.Server.Network
                 };
             }
 
-            public void HandleTrackPackageUploadChunk(PlayerConnection player, PacketTrackPackageUploadChunk packet)
+            public void HandleUploadChunk(PlayerConnection player, PacketTrackPackageUploadChunk packet)
             {
                 if (!PacketValidation.IsValidTrackPackageUploadChunk(packet))
                     return;
@@ -103,7 +82,7 @@ namespace TopSpeed.Server.Network
                 session.NextChunkIndex++;
             }
 
-            public void HandleTrackPackageUploadEnd(PlayerConnection player, PacketTrackPackageUploadEnd packet)
+            public void HandleUploadEnd(PlayerConnection player, PacketTrackPackageUploadEnd packet)
             {
                 if (!PacketValidation.IsValidTrackPackageUploadEnd(packet))
                     return;
@@ -153,24 +132,8 @@ namespace TopSpeed.Server.Network
 
                 _owner.SendTrackPackageUploadResult(player, packet.UploadId, TrackPackageUploadStatus.Accepted, computedHash, LocalizationService.Mark("Track package uploaded successfully."));
             }
-
-            public void HandleTrackPackageReady(PlayerConnection player, PacketTrackPackageReady packet)
-            {
-                if (!player.RoomId.HasValue)
-                    return;
-                if (!_owner._rooms.TryGetValue(player.RoomId.Value, out var room))
-                    return;
-
-                var hash = TrackPackageRef.NormalizeHash(packet.Hash);
-                if (!room.TrackSelection.IsCustomPackage)
-                    return;
-                if (!string.Equals(room.TrackSelection.Hash, hash, System.StringComparison.OrdinalIgnoreCase))
-                    return;
-
-                _owner.MarkPlayerTrackReady(room, player.Id);
-                if (room.PreparingRace)
-                    _owner._race.TryStartAfterLoadout(room);
-            }
         }
     }
 }
+
+

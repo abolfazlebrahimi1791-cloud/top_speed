@@ -141,12 +141,7 @@ namespace TopSpeed.Core.Multiplayer
 
         private static TrackPackageRef CloneTrack(TrackPackageRef track)
         {
-            if (track == null)
-                return TrackPackageRef.BuiltIn(string.Empty);
-
-            return track.IsCustomPackage
-                ? TrackPackageRef.Custom(track.TrackId ?? string.Empty, track.Version ?? string.Empty, track.Hash ?? string.Empty)
-                : TrackPackageRef.BuiltIn(track.BuiltInTrackKey ?? string.Empty);
+            return TrackPackageRef.Clone(track);
         }
     }
 }

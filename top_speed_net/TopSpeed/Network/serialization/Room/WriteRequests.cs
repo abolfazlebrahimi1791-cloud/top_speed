@@ -156,18 +156,7 @@ namespace TopSpeed.Network
 
         private static TrackPackageRef NormalizeTrackRef(TrackPackageRef track)
         {
-            if (track == null)
-                return TrackPackageRef.BuiltIn(string.Empty);
-
-            if (track.Kind == RoomTrackSelectionKind.CustomPackage)
-            {
-                return TrackPackageRef.Custom(
-                    track.TrackId,
-                    track.Version,
-                    track.Hash);
-            }
-
-            return TrackPackageRef.BuiltIn(track.BuiltInTrackKey);
+            return TrackPackageRef.Clone(track);
         }
     }
 }

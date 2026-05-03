@@ -247,15 +247,11 @@ namespace TopSpeed.Server.Protocol
 
         private static TrackPackageRef NormalizeTrackRef(TrackPackageRef track, string legacyTrackName)
         {
-            if (track != null && track.Kind == RoomTrackSelectionKind.CustomPackage)
-            {
-                return TrackPackageRef.Custom(
-                    track.TrackId,
-                    track.Version,
-                    track.Hash);
-            }
+            var normalized = TrackPackageRef.Clone(track);
+            if (normalized.IsCustomPackage)
+                return normalized;
 
-            var builtIn = track != null ? track.BuiltInTrackKey : string.Empty;
+            var builtIn = normalized.BuiltInTrackKey;
             if (string.IsNullOrWhiteSpace(builtIn))
                 builtIn = legacyTrackName ?? string.Empty;
             return TrackPackageRef.BuiltIn(builtIn);

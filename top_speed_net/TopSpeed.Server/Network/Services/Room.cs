@@ -52,35 +52,35 @@ namespace TopSpeed.Server.Network
                 registry.Add("room", Command.TrackPackageUploadBegin, (player, payload, endPoint) =>
                 {
                     if (PacketSerializer.TryReadTrackPackageUploadBegin(payload, out var begin))
-                        HandleTrackPackageUploadBegin(player, begin);
+                        HandleUploadBegin(player, begin);
                     else
                         _owner.PacketFail(endPoint, Command.TrackPackageUploadBegin);
                 });
                 registry.Add("room", Command.TrackPackageUploadChunk, (player, payload, endPoint) =>
                 {
                     if (PacketSerializer.TryReadTrackPackageUploadChunk(payload, out var chunk))
-                        HandleTrackPackageUploadChunk(player, chunk);
+                        HandleUploadChunk(player, chunk);
                     else
                         _owner.PacketFail(endPoint, Command.TrackPackageUploadChunk);
                 });
                 registry.Add("room", Command.TrackPackageUploadEnd, (player, payload, endPoint) =>
                 {
                     if (PacketSerializer.TryReadTrackPackageUploadEnd(payload, out var end))
-                        HandleTrackPackageUploadEnd(player, end);
+                        HandleUploadEnd(player, end);
                     else
                         _owner.PacketFail(endPoint, Command.TrackPackageUploadEnd);
                 });
                 registry.Add("room", Command.TrackPackageReady, (player, payload, endPoint) =>
                 {
                     if (PacketSerializer.TryReadTrackPackageReady(payload, out var ready))
-                        HandleTrackPackageReady(player, ready);
+                        HandleReady(player, ready);
                     else
                         _owner.PacketFail(endPoint, Command.TrackPackageReady);
                 });
                 registry.Add("room", Command.TrackPackageCatalogRequest, (player, payload, endPoint) =>
                 {
                     if (PacketSerializer.TryReadTrackPackageCatalogRequest(payload, out var request))
-                        HandleTrackPackageCatalogRequest(player, request);
+                        HandleCatalogRequest(player, request);
                     else
                         _owner.PacketFail(endPoint, Command.TrackPackageCatalogRequest);
                 });
@@ -127,3 +127,4 @@ namespace TopSpeed.Server.Network
         }
     }
 }
+

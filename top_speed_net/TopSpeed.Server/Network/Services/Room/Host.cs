@@ -44,7 +44,7 @@ namespace TopSpeed.Server.Network
                 }
                 else
                 {
-                    if (!IsCustomTrackSelectionEnabled(room))
+                    if (!IsSelectionEnabled(room))
                     {
                         _owner.SendProtocolMessage(player, ProtocolMessageCode.Failed, LocalizationService.Mark("Custom tracks are not enabled for this room."));
                         return;
@@ -239,3 +239,4 @@ namespace TopSpeed.Server.Network
         }
     }
 }
+
