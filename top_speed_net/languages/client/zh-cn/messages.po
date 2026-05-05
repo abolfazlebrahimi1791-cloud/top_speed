@@ -992,7 +992,7 @@ msgstr "不允许重复部分 [{0}]。"
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Validate.cs:59
 #, csharp-format
 msgid "Duplicate segment id '{0}'."
-msgstr "重复的赛道段ID '{0}'。"
+msgstr "重复的赛道段 ID「{0}」。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Validate.cs:76
 #, csharp-format
@@ -3150,13 +3150,13 @@ msgstr "某些设置缺失或无效。请查看这些详情。"
 #, csharp-format
 msgid ""
 "Sound '{0}' references end_area '{1}', but no matching segment id exists."
-msgstr "声音 '{0}' 引用了 end_area '{1}'，但不存在匹配的赛道段 ID。"
+msgstr "音效「{0}」引用了 end_area「{1}」，但不存在匹配的赛道段 ID。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Validate.cs:205
 #, csharp-format
 msgid ""
 "Sound '{0}' references start_area '{1}', but no matching segment id exists."
-msgstr "声音 '{0}' 引用了 start_area '{1}'，但不存在匹配的赛道段 ID。"
+msgstr "音效「{0}」引用了 start_area「{1}」，但不存在匹配的赛道段 ID。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Rules.cs:227
 #, csharp-format
@@ -3188,7 +3188,7 @@ msgstr "西班牙"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Rooms\Rooms.cs:70
 msgid "Speaks currently active game rules for the current game room."
-msgstr "播报当前游戏房间当前有效的游戏规则。"
+msgstr "播报当前游戏房间中生效的游戏规则。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Rooms\Rooms.cs:48
 msgid "Speaks your current ping while you are in multiplayer menus."
@@ -3856,7 +3856,7 @@ msgstr "未知的赛道段键 '{0}'。"
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Rules.cs:290
 #, csharp-format
 msgid "Unknown sound key '{0}'."
-msgstr "未知的声源键 '{0}'。"
+msgstr "未知的音效键「{0}」。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Vehicles\Parsing\Build\Torque\TorqueCurve.cs:33
 #, csharp-format
@@ -4155,7 +4155,7 @@ msgstr "启用后，车辆碰撞被禁用，车辆可以穿过彼此。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Rooms\Menu.cs:46
 msgid "Who is currently present in this game room"
-msgstr "谁当前在此游戏房间中"
+msgstr "当前房间内有哪些玩家"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Rooms\Menu.cs:19
 msgid "Who is online"
@@ -4273,11 +4273,11 @@ msgstr "你一直在找错误路线，而且还反复验证。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Rooms\Actions.cs:264
 msgid "You left race preparation and returned to room controls."
-msgstr "你退出了比赛准备，回到了房间控制界面。"
+msgstr "您已退出比赛准备并返回房间控制。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\HistoryText.cs:17
 msgid "You left the game room."
-msgstr "你离开了游戏房间。"
+msgstr "您已离开游戏房间。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Results\ResultCatalog.cs:98
 msgid "You made it through with one clear mistake and no excuse."

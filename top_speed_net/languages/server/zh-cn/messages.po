@@ -382,7 +382,7 @@ msgstr "重复的房间 ID「{0}」。"
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Validate.cs:59
 #, csharp-format
 msgid "Duplicate segment id '{0}'."
-msgstr "重复的片段 ID「{0}」。"
+msgstr "重复的赛道段 ID「{0}」。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Validate.cs:76
 #, csharp-format
@@ -559,32 +559,32 @@ msgstr "键「{1}」的房间值「{0}」无效。"
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Rules.cs:60
 #, csharp-format
 msgid "Invalid segment height '{0}'."
-msgstr "无效的片段高度「{0}」。"
+msgstr "无效的赛道段高度「{0}」。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Rules.cs:44
 #, csharp-format
 msgid "Invalid segment length '{0}'."
-msgstr "无效的片段长度「{0}」。"
+msgstr "无效的赛道段长度「{0}」。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Rules.cs:37
 #, csharp-format
 msgid "Invalid segment noise '{0}'."
-msgstr "无效的片段噪点「{0}」。"
+msgstr "无效的赛道段噪音「{0}」。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Rules.cs:30
 #, csharp-format
 msgid "Invalid segment surface '{0}'."
-msgstr "无效的片段表面「{0}」。"
+msgstr "无效的赛道段表面「{0}」。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Rules.cs:23
 #, csharp-format
 msgid "Invalid segment type '{0}'."
-msgstr "无效的片段类型「{0}」。"
+msgstr "无效的赛道段类型「{0}」。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Rules.cs:53
 #, csharp-format
 msgid "Invalid segment width '{0}'."
-msgstr "无效的片段宽度「{0}」。"
+msgstr "无效的赛道段宽度「{0}」。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Protocol\TrackPackages\Build\Assets.cs:65
 #, csharp-format
@@ -691,7 +691,7 @@ msgstr "日志记录已启用。级别：{0}。文件：{1}。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Validate.cs:84
 msgid "Malformed line. Expected '[section]' or 'key = value'."
-msgstr "格式错误，应该是「[章节]」或「键 = 值」。"
+msgstr "格式错误的行。应为 '[section]' 或 'key = value'。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Commands\Host.cs:53
 msgid "Manually check for server updates."
@@ -835,7 +835,7 @@ msgstr "保时捷 911 GT3 RS"
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Validate.cs:90
 #, csharp-format
 msgid "Property '{0}' is outside any section."
-msgstr "属性「{0}」位于任何章节之外。"
+msgstr "属性「{0}」位于任何部分之外。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Network\Protocol\Handshake.cs:168
 msgid "Protocol compatibility verified."
@@ -1048,45 +1048,45 @@ msgstr "房间赛道更改被拒：房间={0}，玩家={1}，比赛已开始={2}
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Validate.cs:51
 #, csharp-format
 msgid "Section '{0}' requires an id."
-msgstr "章节「{0}」需要一个 ID。"
+msgstr "部分「{0}」需要一个 ID。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Validate.cs:169
 #, csharp-format
 msgid ""
 "Segment '{0}' references room '{1}', but no matching [room:{1}] section or "
 "preset exists."
-msgstr "片段「{0}」引用了房间「{1}」，但不存在匹配的 [room:{1}] 章节或预设。"
+msgstr "赛道段「{0}」引用了房间「{1}」，但不存在匹配的 [room:{1}] 部分或预设。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Validate.cs:182
 #, csharp-format
 msgid ""
 "Segment '{0}' references sound source '{1}', but no matching [sound:{1}] "
 "section exists."
-msgstr "片段「{0}」引用了音源「{1}」，但不存在匹配的 [sound:{1}] 章节。"
+msgstr "赛道段「{0}」引用了声源「{1}」，但不存在匹配的 [sound:{1}] 部分。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Validate.cs:194
 #, csharp-format
 msgid ""
 "Segment '{0}' references weather profile '{1}', but no matching [weather:"
 "{1}] section exists."
-msgstr "片段「{0}」引用了天气配置「{1}」，但不存在匹配的 [weather:{1}] 章节。"
+msgstr "赛道段「{0}」引用了天气配置「{1}」，但不存在匹配的 [weather:{1}] 部分。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Rules.cs:46
 #, csharp-format
 msgid "Segment length '{0}' is below minimum {1} and will be clamped."
-msgstr "片段长度「{0}」低于最小值 {1}，将被限制。"
+msgstr "赛道段长度「{0}」低于最小值 {1}，将被限制。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Rules.cs:87
 msgid "Segment room id cannot be empty."
-msgstr "片段房间 ID 不能为空。"
+msgstr "赛道段房间 ID 不能为空。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Rules.cs:100
 msgid "Segment sound source list cannot be empty."
-msgstr "片段音源列表不能为空。"
+msgstr "赛道段声源列表不能为空。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Rules.cs:68
 msgid "Segment weather profile id cannot be empty."
-msgstr "片段天气配置 ID 不能为空。"
+msgstr "赛道段天气配置 ID 不能为空。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Commands\Host.cs:187
 msgid "Server architecture"
@@ -1194,13 +1194,13 @@ msgstr "正在跳过服务器赛道资源包“{0}”：{1}"
 #, csharp-format
 msgid ""
 "Sound '{0}' references end_area '{1}', but no matching segment id exists."
-msgstr "音效「{0}」引用了结束区域「{1}」，但不存在匹配的片段 ID。"
+msgstr "音效「{0}」引用了 end_area「{1}」，但不存在匹配的赛道段 ID。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Validate.cs:205
 #, csharp-format
 msgid ""
 "Sound '{0}' references start_area '{1}', but no matching segment id exists."
-msgstr "音效「{0}」引用了开始区域「{1}」，但不存在匹配的片段 ID。"
+msgstr "音效「{0}」引用了 start_area「{1}」，但不存在匹配的赛道段 ID。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Protocol\TrackPackages\Build\Assets.cs:76
 #, csharp-format
@@ -1249,7 +1249,7 @@ msgstr "标准输入不可用。更新下载已跳过。"
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Network\Services\Race\Lifecycle.cs:267
 #, csharp-format
 msgid "Stopping race: room={0}, active={1}, trackedResults={2}."
-msgstr "正在停止比赛：房间={0}，活跃={1}，跟踪结果={2}。"
+msgstr "正在停止比赛：房间={0}，活跃={1}，已记录结果={2}。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Commands\Host.cs:200
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Commands\Host.cs:450
@@ -1343,7 +1343,7 @@ msgstr "丰田凯美瑞"
 msgid ""
 "Track [meta] must define a weather profile reference, for example 'weather = "
 "default'."
-msgstr "赛道 [meta] 必须定义天气配置引用，例如 'weather = default'。"
+msgstr "赛道 [meta] 必须定义天气配置引用，例如“weather = default”。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Network\Services\Room\Host.cs:39
 msgid "Track cannot be empty."
@@ -1357,7 +1357,7 @@ msgstr "赛道数据缺失。"
 #, csharp-format
 msgid ""
 "Track default weather profile '{0}' does not match any [weather:{0}] section."
-msgstr "赛道默认天气配置「{0}」与任何 [weather:{0}] 章节不匹配。"
+msgstr "赛道默认天气配置「{0}」不匹配任何 [weather:{0}] 部分。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Parser.cs:31
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Parser.cs:55
@@ -1367,7 +1367,7 @@ msgstr "未找到赛道文件：{0}"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Validate.cs:142
 msgid "Track must include at least one [segment:<id>] section."
-msgstr "赛道必须至少包含一个 [segment:<id>] 章节。"
+msgstr "赛道必须至少包含一个 [segment:<id>] 部分。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Network\Services\Room\TrackPackages\Upload.cs:33
 msgid "Track package already exists on server."
@@ -1432,12 +1432,12 @@ msgstr "未知的房间预设「{0}」。"
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Validate.cs:43
 #, csharp-format
 msgid "Unknown section '{0}'."
-msgstr "未知的章节「{0}」。"
+msgstr "未知的部分「{0}」。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Rules.cs:110
 #, csharp-format
 msgid "Unknown segment key '{0}'."
-msgstr "未知的片段键「{0}」。"
+msgstr "未知的赛道段键「{0}」。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Rules.cs:290
 #, csharp-format
