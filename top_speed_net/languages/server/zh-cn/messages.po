@@ -227,7 +227,7 @@ msgstr "命令执行失败，请查看服务器日志。"
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Network\Services\Session\Messages.cs:29
 #, csharp-format
 msgid "Connection closed by server. Reason: {0}."
-msgstr "服务器断开了你的连接。原因：{0}。"
+msgstr "服务器断开了您的连接。原因：{0}。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Network\Services\Session\Messages.cs:27
 msgid "Connection closed."

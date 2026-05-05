@@ -3021,7 +3021,7 @@ msgstr "设置弯道提示根据车速播报的提前时间。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Options\Drive.cs:61
 msgid "Sets how many computer-controlled cars will race against you."
-msgstr "设置有多少计算机控制的汽车将与你比赛。"
+msgstr "设置有多少计算机控制的车辆将与您比赛。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Options\Drive.cs:56
 msgid ""
