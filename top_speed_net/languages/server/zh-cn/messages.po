@@ -100,7 +100,7 @@ msgstr "可用命令："
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Vehicles\Catalog\Data.cs:258
 msgid "BMW 3 Series"
-msgstr "宝马3系列"
+msgstr "宝马 3 系"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Commands\Host.cs:254
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Commands\Host.cs:281
@@ -250,7 +250,7 @@ msgstr "因无效的协议协商而拒绝连接。"
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Network\Protocol\Handshake.cs:153
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Network\Services\Session\Messages.cs:19
 msgid "Connection refused due to protocol mismatch."
-msgstr "因协议不匹配而拒绝连接。"
+msgstr "由于协议不匹配，连接被拒绝。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Network\Services\Session\Lifecycle.cs:152
 #, csharp-format
@@ -334,7 +334,7 @@ msgstr "显示服务器和协议版本。"
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Updates\Service.cs:102
 #, csharp-format
 msgid "Download failed with status code {0}."
-msgstr "下载失败，状态代码 {0}。"
+msgstr "下载失败，状态码为 {0}。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Updates\Runner.cs:97
 msgid "Download failed."
@@ -1464,12 +1464,12 @@ msgstr "更新检查失败：{0}"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Updates\Service.cs:73
 msgid "Update check timed out."
-msgstr "检查更新超时了。"
+msgstr "更新检查超时。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Updates\Service.cs:56
 #, csharp-format
 msgid "Update package '{0}' was not found in the latest release."
-msgstr "在最新版本中未找到更新包「{0}」。"
+msgstr "在最新版本中未找到更新包 '{0}'。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Updates\Runner.cs:119
 #, csharp-format
@@ -1639,7 +1639,7 @@ msgstr "简单"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Rules.cs:269
 msgid "end_area cannot be empty."
-msgstr "结束区域不能为空。"
+msgstr "end_area 不能为空。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Program.Args.cs:84
 msgid "error"
@@ -1692,7 +1692,7 @@ msgstr "正在关闭..."
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Data\Tracks\Parser\Rules.cs:259
 msgid "start_area cannot be empty."
-msgstr "开始区域不能为空。"
+msgstr "start_area 不能为空。"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Server\Network\Protocol\Handshake.cs:133
 msgid "unknown"
