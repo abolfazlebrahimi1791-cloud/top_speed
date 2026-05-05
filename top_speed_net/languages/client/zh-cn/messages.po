@@ -47,7 +47,7 @@ msgstr ""
 
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Settings\Manager\Apply\Network.cs:38
 msgid "A saved server entry was ignored because the host is empty."
-msgstr "保存的服务器条目被忽略，因为域名为空。"
+msgstr "保存的服务器条目已被忽略，因为主机地址为空。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Game\Menu\About.cs:24
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Core.cs:149
@@ -59,7 +59,7 @@ msgid ""
 "Accessibility option for clearer left-right cues with HRTF. It attenuates "
 "the opposite ear for your own car sounds only."
 msgstr ""
-"无障碍功能选项，通过HRTF提供更清晰的左右方位提示。它仅针对您自己车辆的引擎声，降低对侧耳朵的音量。"
+"无障碍选项，可通过 HRTF 提供更清晰的左右方位提示。它只会降低您自己车辆声音在另一侧耳朵中的音量。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Input\Drive\Map\Actions.cs:19
 msgid "Action"
@@ -521,15 +521,15 @@ msgid ""
 "Choose which speech backend to prefer. Automatic lets Prism pick the best "
 "available backend."
 msgstr ""
-"选择首选语音后端。自动模式让Prism选择最佳可用后端。"
+"选择优先使用的语音后端。自动模式会让 Prism 选择当前最佳的可用后端。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Multiplayer.cs:113
 msgid "Choose your transmission mode"
-msgstr "选择您的变速箱模式"
+msgstr "请选择变速箱模式"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Multiplayer.cs:108
 msgid "Choose your vehicle"
-msgstr "选择您的车辆"
+msgstr "请选择车辆"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Results\ResultDialogs.cs:54
 #: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Results\ResultDialogs.cs:75
@@ -1539,7 +1539,7 @@ msgstr "KB"
 
 #: D:\top_speed\top_speed_net\TopSpeed.Shared\Vehicles\Catalog\Data.cs:318
 msgid "Kawasaki Ninja ZX-10R"
-msgstr "川崎忍者ZX-10R"
+msgstr "川崎 Ninja ZX-10R"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Vehicles\Parsing\Core\Readers\FloatCsv.cs:24
 #, csharp-format
@@ -1779,8 +1779,8 @@ msgid ""
 "back out of any menu. Pressing HOME or END will move you to the top or "
 "bottom of a menu."
 msgstr ""
-"主菜单。使用方向键或视图查找器浏览选项。按回车键、右键或按钮1选择。按Esc键或"
-"左键退出任何菜单。按行首或行尾键移动到菜单顶部或底部。"
+"主菜单。使用方向键或视图查找器浏览选项。按回车键、右键或按钮 1 进行选择。按 "
+"Esc 键或左键退出任何菜单。按 Home 键或 End 键可移动到菜单顶部或底部。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Helpers.cs:41
 msgid ""
@@ -1788,8 +1788,8 @@ msgid ""
 "select. Press ESCAPE to back out of any menu. Pressing HOME or END will move "
 "you to the top or bottom of a menu."
 msgstr ""
-"主菜单。使用方向键导航选项。按回车键选择。按Esc键退出任何菜单。按行首或行尾键"
-"移动到菜单顶部或底部。"
+"主菜单。使用方向键浏览选项。按回车键进行选择。按 Esc 键退出任何菜单。按 Home "
+"键或 End 键可移动到菜单顶部或底部。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Core.cs:151
 msgid "Main menu"
@@ -1855,7 +1855,7 @@ msgid ""
 "Measure your screen-reader speaking speed again so usage hints and delayed "
 "speech timings stay accurate."
 msgstr ""
-"重新测试屏幕阅读器朗读速度，以保持使用提示和延迟语音时间准确."
+"重新测量屏幕阅读器的朗读速度，以确保使用提示和延迟语音的时机保持准确。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Settings\Manager\Apply\RaceUi.cs:60
 msgid "Menu sound preset was empty and was reset to default."
@@ -2436,7 +2436,7 @@ msgstr "按右箭头查看。"
 #: D:\top_speed\top_speed_net\TopSpeed\Shortcuts\Mapping.cs:63
 #, csharp-format
 msgid "Press the new key for {0}."
-msgstr "为 {0} 按新按键。"
+msgstr "请按下用于 {0} 的新按键。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Core.cs:122
 msgid "Previous chat category"
@@ -2793,7 +2793,7 @@ msgstr "保存服务器更改"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\SavedServers\Menu.cs:71
 msgid "Saved server host is empty."
-msgstr "保存的服务器域名为空。"
+msgstr "已保存的服务器主机地址为空。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Settings\Manager\Apply\Speech.cs:46
 msgid "Screen reader rate is not a valid number and was reset to default."
@@ -2958,16 +2958,16 @@ msgstr "认真的？你完全可以跑得更好。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\SavedServers\Form.cs:100
 msgid "Server IP or host cannot be empty."
-msgstr "服务器IP或域名不能为空。"
+msgstr "服务器 IP 或主机地址不能为空。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\SavedServers\Form.cs:24
 msgid "Server IP or host, currently empty."
-msgstr "服务器IP或域名，当前为空。"
+msgstr "服务器 IP 或主机地址，当前为空。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\SavedServers\Form.cs:26
 #, csharp-format
 msgid "Server IP or host, currently set to {0}"
-msgstr "服务器IP或域名，当前设置为 {0}"
+msgstr "服务器 IP 或主机地址，当前设置为 {0}"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\SavedServers\Delete.cs:53
 msgid "Server deleted."
@@ -3013,8 +3013,7 @@ msgid ""
 "Set race defaults such as copilot callouts, curve announcements, automatic "
 "information, laps, computer opponents, and difficulty."
 msgstr ""
-"设置比赛行为默认值，包括领航员播报、弯道通知、自动信息、圈数、电脑对手和难"
-"度。"
+"设置比赛默认项，例如领航提示、弯道播报、自动信息、圈数、电脑对手和难度。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Options\Drive.cs:38
 msgid "Sets how early speed dependent curve announcements are spoken."
@@ -3714,7 +3713,7 @@ msgstr "赛道"
 msgid ""
 "Track [meta] must define a weather profile reference, for example 'weather = "
 "default'."
-msgstr "赛道 [meta] 必须定义天气配置引用，例如 'weather = default'。"
+msgstr "赛道 [meta] 必须定义天气配置引用，例如“weather = default”。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Core.cs:164
 msgid "Track creation guide"
@@ -3964,7 +3963,8 @@ msgid ""
 "Use LEFT or RIGHT to change by 0.1 seconds, PAGE UP or PAGE DOWN to change "
 "by 1.0 second, HOME for maximum, END for minimum."
 msgstr ""
-"按左键或右键可调整 0.1 秒，按上翻页键或下翻页键可调整 1.0 秒，按行首键设为最大值，按行尾键设为最小值。”"
+"按左键或右键可调整 0.1 秒，按 Page Up 键或 Page Down 键可调整 1.0 秒，按 "
+"Home 键设为最大值，按 End 键设为最小值。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Helpers.cs:117
 msgid ""
@@ -4071,7 +4071,7 @@ msgstr ""
 
 #: D:\top_speed\top_speed_net\TopSpeed\Game\Multiplayer\Race\Runtime.cs:230
 msgid "What would you like to do?"
-msgstr "你想做什么？"
+msgstr "您想做什么？"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Game\Updates\Check.cs:192
 msgid "What's new in this version:"
@@ -4123,7 +4123,7 @@ msgstr "启用后，随机车辆选择可以包含自定义车辆。"
 msgid ""
 "When checked, steering uses Android motion sensors instead of drag gestures."
 msgstr ""
-"选中后，转向系统使用的是安卓运动传感器，而不是拖动手势."
+"启用后，转向将使用 Android 动作传感器，而不是拖动手势。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Menu\Build\Options\Game.cs:61
 msgid "When checked, the game checks for updates automatically after the logo."
@@ -4438,7 +4438,7 @@ msgstr "传动比必须从第1挡到最后挡位递减。"
 #: D:\top_speed\top_speed_net\TopSpeed\Vehicles\Parsing\Build\Validation\Gears.cs:33
 #, csharp-format
 msgid "gear_ratios[{0}] is outside allowed range 0.20 to 8.00."
-msgstr "传动比[{0}]超出允许范围0.20到8.00。"
+msgstr "gear_ratios[{0}] 超出允许范围 0.20 到 8.00。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Core\Multiplayer\Chat\Buffers.cs:165
 msgid "global chat"
@@ -4873,12 +4873,12 @@ msgstr "{0}，{1} 游戏，{2} 人，最多 {3} 名玩家"
 #: D:\top_speed\top_speed_net\TopSpeed\Drive\Session\Systems\PlayerInfo.cs:161
 #, csharp-format
 msgid "{0}, {1}, {2}."
-msgstr "{0}, {1}, {2}."
+msgstr "{0}，{1}，{2}。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Drive\Session\Systems\PlayerInfo.cs:153
 #, csharp-format
 msgid "{0}, {1}."
-msgstr "{0}, {1}."
+msgstr "{0}，{1}。"
 
 #: D:\top_speed\top_speed_net\TopSpeed\Game\Drive\Results\ResultCatalog.cs:74
 #, csharp-format
