@@ -310,7 +310,7 @@ namespace TopSpeed.Core.Multiplayer
                 playersText);
         }
 
-        private static string ResolveTrackAnnouncement(TrackPackageRef track, string trackName)
+        internal static string FormatTrackDisplayName(TrackPackageRef track, string trackName)
         {
             var display = FormatTrackRefDisplay(track);
             if (!string.IsNullOrWhiteSpace(display))
@@ -323,6 +323,11 @@ namespace TopSpeed.Core.Multiplayer
             return string.IsNullOrWhiteSpace(fallback)
                 ? LocalizationService.Mark("Unknown")
                 : fallback;
+        }
+
+        private static string ResolveTrackAnnouncement(TrackPackageRef track, string trackName)
+        {
+            return FormatTrackDisplayName(track, trackName);
         }
 
         private void RebuildRoomTrackTypeMenu()
