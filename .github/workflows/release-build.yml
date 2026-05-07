@@ -19,6 +19,7 @@ jobs:
       game_zip_mac_arm64: ${{ steps.release_info.outputs.game_zip_mac_arm64 }}
       game_apk_android_arm64: ${{ steps.release_info.outputs.game_apk_android_arm64 }}
       game_apk_android_arm32: ${{ steps.release_info.outputs.game_apk_android_arm32 }}
+      # game_ipa_ios_arm64: ${{ steps.release_info.outputs.game_ipa_ios_arm64 }}
       android_version_code: ${{ steps.release_info.outputs.android_version_code }}
       changes_md: ${{ steps.release_info.outputs.changes_md }}
       server_changes_md: ${{ steps.release_info.outputs.server_changes_md }}
@@ -109,6 +110,7 @@ jobs:
           "game_zip_mac_arm64=TopSpeed-mac-arm64-Release-v-$version.zip" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "game_apk_android_arm64=TopSpeed-android-arm64-Release-v-$version.apk" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "game_apk_android_arm32=TopSpeed-android-arm-Release-v-$version.apk" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          # "game_ipa_ios_arm64=TopSpeed-ios-arm64-Release-v-$version.ipa" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "android_version_code=$androidVersionCode" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "changes_md<<EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           $changes | Out-File -FilePath $env:GITHUB_OUTPUT -Append
@@ -518,6 +520,10 @@ jobs:
           if-no-files-found: error
           path: ${{ steps.package_android.outputs.artifact_paths }}
 
+  # build_ios:
+  #   iOS build matrix is temporarily disabled.
+  #   Re-enable the iOS job once signing and provisioning are available.
+
   release:
     name: Publish Release
     needs:
@@ -526,6 +532,7 @@ jobs:
       - build_mac
       - build_linux
       - build_android
+      # - build_ios
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -553,6 +560,7 @@ jobs:
           test -f "release-assets/${{ needs.metadata.outputs.game_zip_mac_arm64 }}"
           test -f "release-assets/${{ needs.metadata.outputs.game_apk_android_arm64 }}"
           test -f "release-assets/${{ needs.metadata.outputs.game_apk_android_arm32 }}"
+          # test -f "release-assets/${{ needs.metadata.outputs.game_ipa_ios_arm64 }}"
           test -f "release-assets/TopSpeed.Server-win-x64-Release-v-${{ needs.metadata.outputs.server_version }}.zip"
           test -f "release-assets/TopSpeed.Server-linux-x64-Release-v-${{ needs.metadata.outputs.server_version }}.zip"
           test -f "release-assets/TopSpeed.Server-linux-arm64-Release-v-${{ needs.metadata.outputs.server_version }}.zip"
@@ -642,3 +650,4 @@ jobs:
           files: |
             release-assets/**/*.zip
             release-assets/**/*.apk
+            # release-assets/**/*.ipa
