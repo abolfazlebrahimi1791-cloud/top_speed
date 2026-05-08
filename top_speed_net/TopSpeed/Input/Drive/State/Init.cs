@@ -27,6 +27,7 @@ namespace TopSpeed.Input
             _reportSpeed = AxisOrButton.AxisNone;
             _trackName = AxisOrButton.AxisNone;
             _pause = AxisOrButton.AxisNone;
+            _pit = AxisOrButton.AxisNone;
             ReadFromSettings();
             _allowDrivingInput = true;
             _allowAuxiliaryInput = true;
@@ -98,6 +99,8 @@ namespace TopSpeed.Input
             _kbReportSpeed = _settings.GetKeyboardBinding(DriveIntent.ReportSpeed);
             _kbTrackName = _settings.GetKeyboardBinding(DriveIntent.TrackName);
             _kbPause = _settings.GetKeyboardBinding(DriveIntent.Pause);
+            _pit = _settings.GetControllerBinding(DriveIntent.Pit);
+            _kbPit = _settings.GetKeyboardBinding(DriveIntent.Pit);
             _deviceMode = _settings.DeviceMode;
         }
     }

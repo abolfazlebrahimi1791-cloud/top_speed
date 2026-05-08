@@ -84,6 +84,7 @@ namespace TopSpeed.Drive.Multiplayer
             _commentary = subsystems.Commentary;
             _playerInfo = subsystems.PlayerInfo;
             _exit = subsystems.Exit;
+            _pitStop = subsystems.PitStop;
 
             _session = CreateSession();
         }

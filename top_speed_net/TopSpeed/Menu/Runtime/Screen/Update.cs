@@ -20,6 +20,9 @@ namespace TopSpeed.Menu
             if (TryHandleLetterNavigation(input))
                 return MenuUpdateResult.None;
 
+            if (TryHandleNumberActivation(input, out var numberResult))
+                return numberResult;
+
             if (state.NextScreen && SwitchToNextScreen())
                 return MenuUpdateResult.None;
 

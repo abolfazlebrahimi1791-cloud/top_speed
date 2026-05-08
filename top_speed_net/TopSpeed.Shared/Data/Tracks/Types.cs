@@ -56,6 +56,12 @@ namespace TopSpeed.Data
         Airport = 2
     }
 
+    public enum SegmentPitPoint
+    {
+        PitEntry = 0,
+        PitExit = 1
+    }
+
     public readonly struct TrackDefinition
     {
         private static readonly IReadOnlyList<string> EmptySoundSources = Array.Empty<string>();
@@ -74,6 +80,7 @@ namespace TopSpeed.Data
         public TrackRoomOverrides? RoomOverrides { get; }
         public IReadOnlyList<string> SoundSourceIds { get; }
         public IReadOnlyDictionary<string, string> Metadata { get; }
+        public SegmentPitPoint? PitPoint { get; }
 
         public TrackDefinition(TrackType type, TrackSurface surface, TrackNoise noise, float length)
             : this(type, surface, noise, length, null, 0f, 0f, null, 0f, null, null, null, null)
@@ -109,7 +116,8 @@ namespace TopSpeed.Data
             string? roomId,
             TrackRoomOverrides? roomOverrides,
             IReadOnlyList<string>? soundSourceIds,
-            IReadOnlyDictionary<string, string>? metadata)
+            IReadOnlyDictionary<string, string>? metadata,
+            SegmentPitPoint? pitPoint = null)
         {
             Type = type;
             Surface = surface;
@@ -124,6 +132,7 @@ namespace TopSpeed.Data
             RoomOverrides = roomOverrides;
             SoundSourceIds = soundSourceIds ?? EmptySoundSources;
             Metadata = metadata ?? EmptyMetadata;
+            PitPoint = pitPoint;
         }
     }
 

@@ -176,6 +176,8 @@ public sealed class FinishVehicleBehaviorTests
         public void MiniCrash(float newPosition) { }
         public void Bump(float bumpX, float bumpY, float speedDeltaKph) { }
         public void SetNeutralGear() => Calls.Add(nameof(SetNeutralGear));
+        public void SetFirstGear() { }
+        public int GetGearForSpeedKmh(float speedKmh) => 1;
         public void Stop() { }
         public void Quiet() => Calls.Add(nameof(Quiet));
         public void Run(float elapsed) { }
@@ -185,6 +187,7 @@ public sealed class FinishVehicleBehaviorTests
         public bool Backfiring() => false;
         public void Pause() { }
         public void Unpause() { }
+        public void PrepareEngineForPitExit(float targetSpeedKmh) { }
         public void SetPrimaryController(ICarController controller) { }
 
         public void SetOverrideController(ICarController? controller)

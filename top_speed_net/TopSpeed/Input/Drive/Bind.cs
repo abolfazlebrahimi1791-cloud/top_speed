@@ -53,6 +53,7 @@ namespace TopSpeed.Input
             Add(DriveIntent.ReportSpeed, LocalizationService.Mark("Report speed"), InputScope.Auxiliary, TriggerMode.Press, TriggerMode.Press, () => _kbReportSpeed, key => SetReportSpeed(key), () => _reportSpeed, axis => SetReportSpeed(axis));
             Add(DriveIntent.TrackName, LocalizationService.Mark("Report track name"), InputScope.Auxiliary, TriggerMode.Press, TriggerMode.Press, () => _kbTrackName, key => SetTrackName(key), () => _trackName, axis => SetTrackName(axis));
             Add(DriveIntent.Pause, LocalizationService.Mark("Pause"), InputScope.Auxiliary, TriggerMode.Hold, TriggerMode.Hold, () => _kbPause, key => SetPause(key), () => _pause, axis => SetPause(axis));
+            Add(DriveIntent.Pit, LocalizationService.Mark("Pit this time"), InputScope.Auxiliary, TriggerMode.Press, TriggerMode.Press, () => _kbPit, key => SetPit(key), () => _pit, axis => SetPit(axis));
 
             return bindings;
         }

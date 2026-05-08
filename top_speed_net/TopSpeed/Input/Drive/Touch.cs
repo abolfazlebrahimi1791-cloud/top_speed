@@ -24,7 +24,8 @@ namespace TopSpeed.Input
             bool requestInfo = false,
             bool previousPlayerInfo = false,
             bool nextPlayerInfo = false,
-            bool repeatPlayerInfo = false)
+            bool repeatPlayerInfo = false,
+            bool pitThisTime = false)
         {
             _touchSteering = ClampRange(steering, -100, 100);
             _touchThrottle = ClampRange(throttle, 0, 100);
@@ -46,6 +47,7 @@ namespace TopSpeed.Input
             _touchPreviousPlayerInfo = previousPlayerInfo;
             _touchNextPlayerInfo = nextPlayerInfo;
             _touchRepeatPlayerInfo = repeatPlayerInfo;
+            _touchPit = pitThisTime;
         }
 
         public void ClearTouchInputState()
@@ -70,6 +72,7 @@ namespace TopSpeed.Input
             _touchPreviousPlayerInfo = false;
             _touchNextPlayerInfo = false;
             _touchRepeatPlayerInfo = false;
+            _touchPit = false;
         }
 
         private static int ClampRange(int value, int min, int max)

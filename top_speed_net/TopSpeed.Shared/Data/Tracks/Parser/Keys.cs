@@ -69,6 +69,12 @@ namespace TopSpeed.Data
                 return;
             }
 
+            if (key == "pit" && TryParseSegmentPitPoint(value, out var pitPoint))
+            {
+                builder.PitPoint = pitPoint;
+                return;
+            }
+
             builder.Metadata[key] = value;
         }
 

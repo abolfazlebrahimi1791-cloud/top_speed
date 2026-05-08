@@ -170,6 +170,10 @@ namespace TopSpeed.Drive.Single
             _soundPause = LoadLanguageSound("race\\pause");
             _soundResume = LoadLanguageSound("race\\unpause");
             _soundTurnEndDing = LoadLegacySound("ding.ogg");
+            _soundLetsPit = TryLoadLanguageSound("race\\let's pit", allowFallback: false);
+            _soundRightTires = TryLoadLanguageSound("race\\right side tires", allowFallback: false);
+            _soundLeftTires = TryLoadLanguageSound("race\\left side tires", allowFallback: false);
+            _soundFuelingUp = TryLoadLanguageSound("race\\fueling up", allowFallback: false);
             _soundTheme.SetVolumePercent((int)Math.Round(_settings.MusicVolume * 100f));
         }
 

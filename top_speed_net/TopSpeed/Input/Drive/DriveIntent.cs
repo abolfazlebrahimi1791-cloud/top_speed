@@ -21,7 +21,8 @@ namespace TopSpeed.Input
         ReportDistance,
         ReportSpeed,
         TrackName,
-        Pause
+        Pause,
+        Pit
     }
 }
 

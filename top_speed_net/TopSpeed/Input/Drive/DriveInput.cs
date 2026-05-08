@@ -85,6 +85,7 @@ namespace TopSpeed.Input
         private AxisOrButton _reportSpeed;
         private AxisOrButton _trackName;
         private AxisOrButton _pause;
+        private AxisOrButton _pit;
         private InputDeviceMode _deviceMode;
         private Key _kbLeft;
         private Key _kbRight;
@@ -114,6 +115,7 @@ namespace TopSpeed.Input
         private Key _kbTrackName;
         private Key _kbPlayerNumber;
         private Key _kbPause;
+        private Key _kbPit;
         private Key _kbPlayerPos1;
         private Key _kbPlayerPos2;
         private Key _kbPlayerPos3;
@@ -162,6 +164,7 @@ namespace TopSpeed.Input
         private bool _touchPreviousPlayerInfo;
         private bool _touchNextPlayerInfo;
         private bool _touchRepeatPlayerInfo;
+        private bool _touchPit;
         private DriveIntentState _intentState;
         private bool UseController => _deviceMode != InputDeviceMode.Keyboard && _controllerAvailable;
         private bool UseKeyboard => _deviceMode != InputDeviceMode.Controller || !_controllerAvailable;

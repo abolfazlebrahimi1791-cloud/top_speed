@@ -24,6 +24,7 @@ using PlayerInfoSubsystem = TopSpeed.Drive.Session.Systems.PlayerInfo;
 using PlayerVehicleSubsystem = TopSpeed.Drive.Session.Systems.PlayerVehicle;
 using TrackAudioService = TopSpeed.Drive.Session.Systems.TrackAudio;
 using ProgressSubsystem = TopSpeed.Drive.TimeTrial.Session.Systems.Progress;
+using PitStopSubsystem = TopSpeed.Drive.Session.Systems.PitStop;
 using SessionRuntime = TopSpeed.Drive.Session.Session;
 
 namespace TopSpeed.Drive.TimeTrial
@@ -71,6 +72,7 @@ namespace TopSpeed.Drive.TimeTrial
         private readonly GeneralRequestsSubsystem _generalRequests;
         private readonly PlayerInfoSubsystem _playerInfo;
         private readonly ExitSubsystem _exit;
+        private readonly PitStopSubsystem _pitStop;
         private readonly TrackAudioService _trackAudio;
 
         private uint _nextMediaId;
@@ -94,6 +96,10 @@ namespace TopSpeed.Drive.TimeTrial
         private Source? _soundPause;
         private Source? _soundResume;
         private Source? _soundTurnEndDing;
+        private Source? _soundLetsPit;
+        private Source? _soundRightTires;
+        private Source? _soundLeftTires;
+        private Source? _soundFuelingUp;
 
         public TimeTrialSession(
             AudioManager audio,
@@ -142,6 +148,10 @@ namespace TopSpeed.Drive.TimeTrial
             _soundPause = LoadLanguageSound("race\\pause");
             _soundResume = LoadLanguageSound("race\\unpause");
             _soundTurnEndDing = LoadLegacySound("ding.ogg");
+            _soundLetsPit = TryLoadLanguageSound("race\\let's pit", allowFallback: false);
+            _soundRightTires = TryLoadLanguageSound("race\\right side tires", allowFallback: false);
+            _soundLeftTires = TryLoadLanguageSound("race\\left side tires", allowFallback: false);
+            _soundFuelingUp = TryLoadLanguageSound("race\\fueling up", allowFallback: false);
             PreloadRaceSpeechSources();
             _trackAudio = new TrackAudioService(_settings, GetRandomSoundBySlot, _soundTurnEndDing, QueueSound, (sessionEvent, delay) => _session!.QueueEvent(sessionEvent, delay));
             _panels = new PanelsSubsystem("panels", 100, _input, _panelManager, _radioPanel, SpeakText);
@@ -171,7 +181,8 @@ namespace TopSpeed.Drive.TimeTrial
                 () => _lap,
                 () => _nrOfLaps,
                 () => _lap <= _nrOfLaps ? _session!.Context.ProgressMilliseconds : _raceTime,
-                SpeakText);
+                SpeakText,
+                isInPitStop: () => _pitStop!.IsActive);
             _generalRequests = new GeneralRequestsSubsystem(
                 "generalRequests",
                 210,
@@ -195,6 +206,23 @@ namespace TopSpeed.Drive.TimeTrial
                 300,
                 UpdateExitWhenQueueIdle,
                 () => _session!.ApplyCommand(new Command(Commands.RequestExit)));
+            _pitStop = new PitStopSubsystem(
+                "pitStop",
+                135,
+                _input,
+                _car,
+                _track,
+                () => _started,
+                () => _finished,
+                _soundLetsPit,
+                _soundRightTires,
+                _soundLeftTires,
+                _soundFuelingUp,
+                () => { },
+                () => { },
+                SpeakText,
+                s => QueueSound(s),
+                (s, d) => _session!.QueueEvent(new Event(Events.PlaySound, s), d));
             _progress = new ProgressSubsystem(
                 "progress",
                 120,
@@ -216,6 +244,8 @@ namespace TopSpeed.Drive.TimeTrial
 
         public bool WantsExit => _session.Context.WantsExit;
         public bool WantsPause => _session.Context.WantsPause;
+        public bool WantsPitStopMenu => _pitStop.NeedsChoice;
+        public void AcceptPitStopChoice(int choiceId) => _pitStop.SetChoice(choiceId);
 
         private SessionRuntime CreateSession()
         {
@@ -224,7 +254,7 @@ namespace TopSpeed.Drive.TimeTrial
             var policy = new PolicyBuilder(Phase.Initializing, Phase.Countdown)
                 .Add(Phase.Initializing, false, false, InputPolicy.Create(false, true, false), Defaults.NoSubsystems, allowedCommands, allowedExternalEvents, new[] { Phase.Countdown, Phase.Aborted })
                 .Add(Phase.Countdown, true, true, InputPolicy.Create(true, true, true), PhaseDefinition.Subsystems(_panels, _playerVehicle, _progress, _listener, _coreRequests, _generalRequests, _playerInfo, _exit), allowedCommands, allowedExternalEvents, new[] { Phase.Running, Phase.Paused, Phase.Aborted })
-                .Add(Phase.Running, true, true, InputPolicy.Create(true, true, true), PhaseDefinition.Subsystems(_panels, _playerVehicle, _progress, _listener, _coreRequests, _generalRequests, _playerInfo, _exit), allowedCommands, allowedExternalEvents, new[] { Phase.Paused, Phase.Finishing, Phase.Finished, Phase.Aborted })
+                .Add(Phase.Running, true, true, InputPolicy.Create(true, true, true), PhaseDefinition.Subsystems(_panels, _playerVehicle, _progress, _listener, _coreRequests, _generalRequests, _playerInfo, _exit, _pitStop), allowedCommands, allowedExternalEvents, new[] { Phase.Paused, Phase.Finishing, Phase.Finished, Phase.Aborted })
                 .Add(Phase.Paused, false, false, InputPolicy.Create(false, true, false), Defaults.NoSubsystems, allowedCommands, allowedExternalEvents, new[] { Phase.Countdown, Phase.Running, Phase.Finishing, Phase.Aborted })
                 .Add(Phase.Finishing, true, true, InputPolicy.Create(false, true, false), PhaseDefinition.Subsystems(_playerVehicle, _listener, _exit), allowedCommands, allowedExternalEvents, new[] { Phase.Finished, Phase.Aborted })
                 .Add(Phase.Finished, true, true, InputPolicy.Create(false, true, false), PhaseDefinition.Subsystems(_playerVehicle, _listener, _exit), allowedCommands, allowedExternalEvents, new[] { Phase.Aborted })
@@ -232,7 +262,7 @@ namespace TopSpeed.Drive.TimeTrial
                 .Build();
 
             var builder = new SessionBuilder(policy);
-            builder.AddSubsystems(_panels, _playerVehicle, _progress, _listener, _coreRequests, _generalRequests, _playerInfo, _exit);
+            builder.AddSubsystems(_panels, _playerVehicle, _progress, _listener, _coreRequests, _generalRequests, _playerInfo, _exit, _pitStop);
             builder.AddEventHandler(new HandlerId("timeTrial.events"), 100, HandleSessionEvent);
             builder.AddEventHandler(new HandlerId("timeTrial.phase"), 200, HandlePhaseEvent);
             return builder.Build();

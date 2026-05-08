@@ -139,6 +139,29 @@ namespace TopSpeed.Vehicles
                 StopSurfaceLoops();
         }
 
+        public virtual void SetFirstGear()
+        {
+            _gear = FirstForwardGear;
+            _switchingGear = 0;
+            _autoShiftCooldown = 0f;
+        }
+
+        public virtual int GetGearForSpeedKmh(float speedKmh) => _engine.GetGearForSpeedKmh(speedKmh);
+
+        public virtual void PrepareEngineForPitExit(float targetSpeedKmh)
+        {
+            if (_combustionState != EngineCombustionState.On || _engineRotationState == EngineRotationState.Stopped)
+                return;
+            _speed = Math.Max(_speed, targetSpeedKmh);
+            _engine.SyncFromSpeed(
+                _speed,
+                GetDriveGear(),
+                elapsed: 0f,
+                throttleInput: 50,
+                couplingMode: EngineCouplingMode.Locked);
+            UpdateEngineFreqManual();
+        }
+
         private bool CanApplyThrottleDrive(float drivelineCouplingFactor)
         {
             if (_thrust <= 10f)

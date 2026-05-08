@@ -225,6 +225,8 @@ namespace TopSpeed.Input
                     return _touchCurrentRaceTime;
                 case DriveIntent.Pause:
                     return _touchPause;
+                case DriveIntent.Pit:
+                    return _touchPit;
                 default:
                     return false;
             }

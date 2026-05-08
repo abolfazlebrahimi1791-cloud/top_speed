@@ -22,6 +22,7 @@ namespace TopSpeed.Drive.Session.Systems
         private readonly Func<int> _getLapLimit;
         private readonly Func<int> _getRaceTimeMs;
         private readonly Func<bool> _canToggleShiftOnDemand;
+        private readonly Func<bool>? _isInPitStop;
         private readonly Action<string> _speakText;
 
         public CoreRequests(
@@ -36,7 +37,8 @@ namespace TopSpeed.Drive.Session.Systems
             Func<int> getLapLimit,
             Func<int> getRaceTimeMs,
             Action<string> speakText,
-            Func<bool>? canToggleShiftOnDemand = null)
+            Func<bool>? canToggleShiftOnDemand = null,
+            Func<bool>? isInPitStop = null)
             : base(name, order)
         {
             _input = input ?? throw new ArgumentNullException(nameof(input));
@@ -48,6 +50,7 @@ namespace TopSpeed.Drive.Session.Systems
             _getLapLimit = getLapLimit ?? throw new ArgumentNullException(nameof(getLapLimit));
             _getRaceTimeMs = getRaceTimeMs ?? throw new ArgumentNullException(nameof(getRaceTimeMs));
             _canToggleShiftOnDemand = canToggleShiftOnDemand ?? (() => true);
+            _isInPitStop = isInPitStop;
             _speakText = speakText ?? throw new ArgumentNullException(nameof(speakText));
         }
 
@@ -72,6 +75,8 @@ namespace TopSpeed.Drive.Session.Systems
 
         private void HandleEngineStartRequest()
         {
+            if (_isInPitStop?.Invoke() == true)
+                return;
             if (!_input.Intents.IsTriggered(DriveIntent.StartEngine) || !_isStarted())
                 return;
             if (_car.State == CarState.Crashing || _car.State == CarState.Starting || _car.State == CarState.Stopping)

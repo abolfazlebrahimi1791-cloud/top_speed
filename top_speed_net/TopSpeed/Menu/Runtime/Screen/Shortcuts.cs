@@ -4,6 +4,35 @@ namespace TopSpeed.Menu
 {
     internal sealed partial class MenuScreen
     {
+        private bool TryHandleNumberActivation(IInputService input, out MenuUpdateResult result)
+        {
+            result = MenuUpdateResult.None;
+            if (_items.Count == 0)
+                return false;
+
+            if (!MenuInputUtil.TryGetPressedDigit(input, out var digit))
+                return false;
+
+            var count = 0;
+            for (var i = 0; i < _items.Count; i++)
+            {
+                var item = _items[i];
+                if (item.IsHidden || (item.OnActivate == null && item.NextMenuId == null && item.Action == MenuAction.None))
+                    continue;
+
+                count++;
+                if (count != digit)
+                    continue;
+
+                _activeActionIndex = NoSelection;
+                MoveToIndex(i);
+                result = HandleActivation();
+                return true;
+            }
+
+            return false;
+        }
+
         private bool TryHandleLetterNavigation(IInputService input)
         {
             if (_items.Count == 0)

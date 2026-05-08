@@ -72,6 +72,22 @@ namespace TopSpeed.Tracks
             };
         }
 
+        public bool TryGetPitPointDistance(Data.SegmentPitPoint pitPoint, out float distanceInLap)
+        {
+            if (_lapDistance == 0)
+                Initialize();
+            for (var i = 0; i < _segmentCount; i++)
+            {
+                if (_definition[i].PitPoint == pitPoint)
+                {
+                    distanceInLap = _segmentStartDistances[i];
+                    return true;
+                }
+            }
+            distanceInLap = 0f;
+            return false;
+        }
+
         public bool NextRoad(float position, float speed, int curveAnnouncementMode, float speedDependentLeadTimeSeconds, out Road road)
         {
             road = new Road();

@@ -51,6 +51,8 @@ namespace TopSpeed.Vehicles
         void MiniCrash(float newPosition);
         void Bump(float bumpX, float bumpY, float speedDeltaKph);
         void SetNeutralGear();
+        void SetFirstGear();
+        int GetGearForSpeedKmh(float speedKmh);
         void Stop();
         void Quiet();
         void Run(float elapsed);
@@ -60,6 +62,8 @@ namespace TopSpeed.Vehicles
         bool Backfiring();
         void Pause();
         void Unpause();
+
+        void PrepareEngineForPitExit(float targetSpeedKmh);
 
         void SetPrimaryController(ICarController controller);
         void SetOverrideController(ICarController? controller);

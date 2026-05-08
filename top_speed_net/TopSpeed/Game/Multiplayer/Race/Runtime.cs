@@ -21,6 +21,7 @@ namespace TopSpeed.Game
             private readonly MultiplayerRaceBinding _binding;
             private MultiplayerSession? _mode;
             private bool _quitConfirmActive;
+            private bool _pitMenuShown;
 
             public MultiplayerRaceRuntime(Game owner)
             {
@@ -104,6 +105,17 @@ namespace TopSpeed.Game
                 {
                     End(_mode.ConsumeResultSummary());
                     return;
+                }
+
+                if (_mode.WantsPitStopMenu && !_pitMenuShown)
+                {
+                    _pitMenuShown = true;
+                    _owner._choices.Show(PitStopMenu.Create(result =>
+                    {
+                        _pitMenuShown = false;
+                        if (!result.IsCanceled)
+                            _mode?.AcceptPitStopChoice(result.ChoiceId);
+                    }));
                 }
 
                 if (_quitConfirmActive)
@@ -196,6 +208,7 @@ namespace TopSpeed.Game
             {
                 DisposeMode();
                 _quitConfirmActive = false;
+                _pitMenuShown = false;
                 _binding.ClearRaceBinding();
                 _binding.ResetPending();
             }
