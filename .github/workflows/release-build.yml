@@ -699,12 +699,14 @@ jobs:
             exit 1
           fi
 
+          rm -f "$ipa_name"
           package_dir="$(mktemp -d)"
           mkdir -p "$package_dir/Payload"
-          cp -R "$app_source" "$package_dir/Payload/"
+          # Use a stable app bundle name without extra dots for AltStore compatibility.
+          /usr/bin/ditto "$app_source" "$package_dir/Payload/TopSpeed.app"
           (
             cd "$package_dir"
-            zip -qry "$GITHUB_WORKSPACE/top_speed_net/$ipa_name" Payload
+            /usr/bin/ditto -c -k --sequesterRsrc --keepParent Payload "$GITHUB_WORKSPACE/top_speed_net/$ipa_name"
           )
           rm -rf "$package_dir"
 
