@@ -143,7 +143,7 @@ namespace TopSpeed.Drive.Multiplayer
             _soundPause = LoadLanguageSound("race\\pause");
             _soundResume = LoadLanguageSound("race\\unpause");
             _soundTurnEndDing = LoadLegacySound("ding.ogg");
-            _soundLetsPit = TryLoadLanguageSound("race\\let's pit", allowFallback: false);
+            _soundLetsPit = TryLoadLanguageSound("race\\letspit", allowFallback: false);
             _soundRightTires = TryLoadPitSound("tirechangeright.ogg");
             _soundLeftTires = TryLoadPitSound("tirechangeleft.ogg");
             _soundFuelingUp = TryLoadPitSound("refueling.ogg");
