@@ -125,6 +125,13 @@ namespace TopSpeed.Game
                     return;
                 }
 
+                if (_owner._choices.HasActiveChoiceDialog)
+                {
+                    var action = _owner._menu.Update(_owner._input);
+                    _owner.HandleMenuAction(action);
+                    return;
+                }
+
                 if (!_owner._textInputPromptActive && !_owner._dialogs.HasActiveOverlayDialog && !_owner._choices.HasActiveChoiceDialog)
                 {
                     if (_owner._multiplayerCoordinator.TryHandleRaceLoopHistoryShortcuts(_owner._input))
