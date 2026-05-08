@@ -238,7 +238,7 @@ namespace TopSpeed.Drive.Session.Systems
         private void UpdateEnteringLane(float elapsed)
         {
             if (!_hasPitLane)
-                _car.SetPosition(_pitRoadCenterX, _pitEntryY);
+                _car.SetPosition(_car.PositionX, _pitEntryY);
 
             _timer += elapsed;
             if (_timer < EnteringLaneDurationSeconds)
@@ -261,7 +261,7 @@ namespace TopSpeed.Drive.Session.Systems
         private void UpdateInService(float elapsed)
         {
             if (!_hasPitLane)
-                _car.SetPosition(_pitRoadCenterX, _pitEntryY);
+                _car.SetPosition(_car.PositionX, _pitEntryY);
 
             if (_workStarted)
             {
@@ -320,7 +320,7 @@ namespace TopSpeed.Drive.Session.Systems
         private void UpdateExitingLane(float elapsed)
         {
             if (!_hasPitLane)
-                _car.SetPosition(_steerBackStarted ? _pitEntryX : _pitRoadCenterX, _pitEntryY);
+                _car.SetPosition(_car.PositionX, _pitEntryY);
 
             _timer += elapsed;
 
