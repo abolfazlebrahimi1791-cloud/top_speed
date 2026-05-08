@@ -101,6 +101,7 @@ namespace TopSpeed.Drive.Multiplayer
         private AudioSource? _soundRightTires;
         private AudioSource? _soundLeftTires;
         private AudioSource? _soundFuelingUp;
+        private AudioSource? _soundExitPitRoad;
 
         private byte LocalPlayerNumber => _network.PlayerNumber;
         private bool LocalMediaLoaded => _localRadio.HasMedia;

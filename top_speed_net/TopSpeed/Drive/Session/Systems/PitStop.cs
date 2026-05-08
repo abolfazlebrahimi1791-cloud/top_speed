@@ -35,6 +35,7 @@ namespace TopSpeed.Drive.Session.Systems
         private readonly AudioSource? _soundRightTires;
         private readonly AudioSource? _soundLeftTires;
         private readonly AudioSource? _soundFuelingUp;
+        private readonly AudioSource? _soundExitPitRoad;
         private readonly Action _setPitting;
         private readonly Action _setRacing;
         private readonly Action<string> _speakText;
@@ -61,11 +62,15 @@ namespace TopSpeed.Drive.Session.Systems
         private bool _audioPhase7;
         private bool _audioPhase8;
         private bool _audioPhase9;
+        private float _pitRoadCenterX;
+        private bool _steerBackStarted;
+        private float _ghostTimer;
 
         public PitPhase Phase => _pitPhase;
         public bool PitThisLap => _pitThisLap;
         public bool NeedsChoice { get; private set; }
         public bool IsActive => _pitPhase != PitPhase.Inactive;
+        public bool IsGhosted => _pitPhase != PitPhase.Inactive || _ghostTimer > 0f;
 
         public PitStop(
             string name,
@@ -79,6 +84,7 @@ namespace TopSpeed.Drive.Session.Systems
             AudioSource? soundRightTires,
             AudioSource? soundLeftTires,
             AudioSource? soundFuelingUp,
+            AudioSource? soundExitPitRoad,
             Action setPitting,
             Action setRacing,
             Action<string> speakText,
@@ -95,6 +101,7 @@ namespace TopSpeed.Drive.Session.Systems
             _soundRightTires = soundRightTires;
             _soundLeftTires = soundLeftTires;
             _soundFuelingUp = soundFuelingUp;
+            _soundExitPitRoad = soundExitPitRoad;
             _setPitting = setPitting ?? throw new ArgumentNullException(nameof(setPitting));
             _setRacing = setRacing ?? throw new ArgumentNullException(nameof(setRacing));
             _speakText = speakText ?? throw new ArgumentNullException(nameof(speakText));
@@ -131,10 +138,15 @@ namespace TopSpeed.Drive.Session.Systems
             _workStarted = false;
             NeedsChoice = false;
             _prevInitialized = false;
+            _ghostTimer = 0f;
+            _pitController.SteerTargetX = null;
         }
 
         public override void Update(SessionContext context, float elapsed)
         {
+            if (_ghostTimer > 0f)
+                _ghostTimer = Math.Max(0f, _ghostTimer - elapsed);
+
             if (!_isStarted() || _isFinished())
             {
                 if (_pitPhase != PitPhase.Inactive)
@@ -214,6 +226,10 @@ namespace TopSpeed.Drive.Session.Systems
 
             _pitEntryX = _car.PositionX;
             _pitEntryY = _car.PositionY;
+            var road = _track.RoadAtPosition(_pitEntryY);
+            _pitRoadCenterX = (road.Left + road.Right) * 0.5f;
+            _pitController.SteerTargetX = _pitRoadCenterX;
+            _steerBackStarted = false;
             _setPitting();
             _pitController.BrakeMode = false;
             _car.SetOverrideController(_pitController);
@@ -307,6 +323,13 @@ namespace TopSpeed.Drive.Session.Systems
                 _car.SetPosition(_pitEntryX, _pitEntryY);
 
             _timer += elapsed;
+
+            if (!_steerBackStarted && _timer >= ExitingLaneDurationSeconds - 5f)
+            {
+                _steerBackStarted = true;
+                _pitController.SteerTargetX = _pitEntryX;
+            }
+
             if (_timer < ExitingLaneDurationSeconds)
                 return;
             CompletePitExit();
@@ -321,6 +344,9 @@ namespace TopSpeed.Drive.Session.Systems
             _car.PrepareEngineForPitExit(PitLaneSpeedKmh);
             _car.SetPosition(_pitEntryX, lapStart + _pitExitDist);
             _car.SetOverrideController(null);
+            _soundExitPitRoad?.Play(loop: false);
+            _ghostTimer = 5f;
+            _pitController.SteerTargetX = null;
             _setRacing();
             _pitPhase = PitPhase.Inactive;
             NeedsChoice = false;
@@ -331,6 +357,8 @@ namespace TopSpeed.Drive.Session.Systems
             _soundFuelingUp?.Stop();
             _soundRightTires?.Stop();
             _soundLeftTires?.Stop();
+            _pitController.SteerTargetX = null;
+            _ghostTimer = 0f;
             _car.SetOverrideController(null);
             if (!_isFinished())
                 _setRacing();

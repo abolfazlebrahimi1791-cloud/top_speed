@@ -119,6 +119,7 @@ namespace TopSpeed.Drive.Single
         private Source? _soundRightTires;
         private Source? _soundLeftTires;
         private Source? _soundFuelingUp;
+        private Source? _soundExitPitRoad;
 
         public SingleSession(
             AudioManager audio,
@@ -276,7 +277,7 @@ namespace TopSpeed.Drive.Single
                 value => _positionComment = value,
                 SpeakIfLoaded,
                 Speak);
-            _collisions = new CollisionsSubsystem("collisions", 150, _track, _car, _computerPlayers, () => _playerNumber, () => _nComputerPlayers);
+            _collisions = new CollisionsSubsystem("collisions", 150, _track, _car, _computerPlayers, () => _playerNumber, () => _nComputerPlayers, () => _pitStop!.IsGhosted);
             _pitStop = new PitStopSubsystem(
                 "pitStop",
                 135,
@@ -289,6 +290,7 @@ namespace TopSpeed.Drive.Single
                 _soundRightTires,
                 _soundLeftTires,
                 _soundFuelingUp,
+                _soundExitPitRoad,
                 () => { },
                 () => { },
                 SpeakText,

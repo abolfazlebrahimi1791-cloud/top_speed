@@ -144,9 +144,10 @@ namespace TopSpeed.Drive.Multiplayer
             _soundResume = LoadLanguageSound("race\\unpause");
             _soundTurnEndDing = LoadLegacySound("ding.ogg");
             _soundLetsPit = TryLoadLanguageSound("race\\let's pit", allowFallback: false);
-            _soundRightTires = TryLoadLanguageSound("race\\right side tires", allowFallback: false);
-            _soundLeftTires = TryLoadLanguageSound("race\\left side tires", allowFallback: false);
-            _soundFuelingUp = TryLoadLanguageSound("race\\fueling up", allowFallback: false);
+            _soundRightTires = TryLoadPitSound("tirechangeright.ogg");
+            _soundLeftTires = TryLoadPitSound("tirechangeleft.ogg");
+            _soundFuelingUp = TryLoadPitSound("refueling.ogg");
+            _soundExitPitRoad = TryLoadLanguageSound("race\\exitpitroad", allowFallback: false);
         }
 
         private void QueueRaceIntro()
@@ -208,6 +209,14 @@ namespace TopSpeed.Drive.Multiplayer
                 throw new FileNotFoundException($"Missing legacy sound {fileName}.");
 
             return LoadBusSource(path, AudioEngineOptions.CopilotBusName, streamFromDisk: false);
+        }
+
+        private Source? TryLoadPitSound(string fileName)
+        {
+            var path = AssetPaths.ResolvePitSoundPath(fileName);
+            if (path != null)
+                return LoadBusSource(path, AudioEngineOptions.CopilotBusName, streamFromDisk: false);
+            return null;
         }
 
         private Source LoadBusSource(string path, string busName, bool streamFromDisk)

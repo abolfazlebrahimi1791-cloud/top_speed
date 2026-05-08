@@ -81,6 +81,7 @@ namespace TopSpeed.Drive.Multiplayer
                 _soundRightTires,
                 _soundLeftTires,
                 _soundFuelingUp,
+                _soundExitPitRoad,
                 () => _currentState = Protocol.PlayerState.Pitting,
                 () => _currentState = Protocol.PlayerState.Racing,
                 SpeakText,

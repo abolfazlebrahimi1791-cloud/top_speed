@@ -100,6 +100,7 @@ namespace TopSpeed.Drive.TimeTrial
         private Source? _soundRightTires;
         private Source? _soundLeftTires;
         private Source? _soundFuelingUp;
+        private Source? _soundExitPitRoad;
 
         public TimeTrialSession(
             AudioManager audio,
@@ -149,9 +150,10 @@ namespace TopSpeed.Drive.TimeTrial
             _soundResume = LoadLanguageSound("race\\unpause");
             _soundTurnEndDing = LoadLegacySound("ding.ogg");
             _soundLetsPit = TryLoadLanguageSound("race\\let's pit", allowFallback: false);
-            _soundRightTires = TryLoadLanguageSound("race\\right side tires", allowFallback: false);
-            _soundLeftTires = TryLoadLanguageSound("race\\left side tires", allowFallback: false);
-            _soundFuelingUp = TryLoadLanguageSound("race\\fueling up", allowFallback: false);
+            _soundRightTires = TryLoadPitSound("tirechangeright.ogg");
+            _soundLeftTires = TryLoadPitSound("tirechangeleft.ogg");
+            _soundFuelingUp = TryLoadPitSound("refueling.ogg");
+            _soundExitPitRoad = TryLoadLanguageSound("race\\exitpitroad", allowFallback: false);
             PreloadRaceSpeechSources();
             _trackAudio = new TrackAudioService(_settings, GetRandomSoundBySlot, _soundTurnEndDing, QueueSound, (sessionEvent, delay) => _session!.QueueEvent(sessionEvent, delay));
             _panels = new PanelsSubsystem("panels", 100, _input, _panelManager, _radioPanel, SpeakText);
@@ -218,6 +220,7 @@ namespace TopSpeed.Drive.TimeTrial
                 _soundRightTires,
                 _soundLeftTires,
                 _soundFuelingUp,
+                _soundExitPitRoad,
                 () => { },
                 () => { },
                 SpeakText,
