@@ -231,6 +231,7 @@ namespace TopSpeed.Drive.Session.Systems
             _pitController.SteerTargetX = _pitRoadCenterX;
             _steerBackStarted = false;
             _setPitting();
+            _car.SetFirstGear();
             _pitController.BrakeMode = false;
             _car.SetOverrideController(_pitController);
         }
@@ -324,7 +325,7 @@ namespace TopSpeed.Drive.Session.Systems
 
             _timer += elapsed;
 
-            if (!_steerBackStarted && _timer >= ExitingLaneDurationSeconds - 5f)
+            if (!_steerBackStarted && _timer >= ExitingLaneDurationSeconds - 1f)
             {
                 _steerBackStarted = true;
                 _pitController.SteerTargetX = _pitEntryX;
