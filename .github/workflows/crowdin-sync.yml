@@ -6,7 +6,8 @@ on:
       - main
       - master
   schedule:
-    - cron: "17 * * * *"
+    - cron: "23 * * * *"
+      timezone: "Africa/Cairo"
   workflow_dispatch:
 
 permissions:
