@@ -185,8 +185,10 @@ namespace TopSpeed.Drive.Single
                 () => _started,
                 () => _finished,
                 TrackLocalCrashState,
-                SpeakText);
-            _listener = new ListenerSubsystem("listener", 140, _audio, _car, _localRadio);
+                SpeakText,
+                skipCrashEval: () => _pitStop!.IsActive);
+            _listener = new ListenerSubsystem("listener", 140, _audio, _car, _localRadio,
+                () => _pitStop!.ListenerXOverride);
             _coreRequests = new CoreRequestsSubsystem(
                 "coreRequests",
                 200,

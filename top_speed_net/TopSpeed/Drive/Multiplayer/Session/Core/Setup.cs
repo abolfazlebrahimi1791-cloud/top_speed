@@ -132,7 +132,9 @@ namespace TopSpeed.Drive.Multiplayer
                     () => _hostPaused,
                     GetSpatialTrackLength,
                     TrackLocalCrashState,
-                    SpeakText),
+                    SpeakText,
+                    skipCrashEval: () => pitStop.IsActive,
+                    getListenerXOverride: () => pitStop.ListenerXOverride),
                 new ProgressSubsystem(
                     "progress",
                     130,
