@@ -25,7 +25,10 @@ namespace TopSpeed.Drive.Session.Systems
         private const float FuelStopTimeSeconds = 7f;
         private const float SecondCanTimeSeconds = 8f;
         private const float LeftTiresTimeSeconds = 8f;
-        private const float ListenerLerpRate = 1.5f;
+        private const float ListenerLerpRate = 4.0f;
+        private const float OffTrackMoveSeconds = 3.0f;
+        private const float ExitStartMoveSeconds = 14.0f;
+        private const float ListenerFollowDelaySeconds = 0.5f;
 
         private readonly DriveInput _input;
         private readonly ICar _car;
@@ -64,10 +67,11 @@ namespace TopSpeed.Drive.Session.Systems
         private bool _audioPhase8;
         private bool _audioPhase9;
         private float _pitRoadCenterX;
-        private bool _steerBackStarted;
+        private Track.Road _pitEntryRoad;
 
         // Off-track pit lane state (used when !_hasPitLane)
-        private float _trackLeftEdge;
+        // Note: listener forward=+Z, so right=-X, left=+X. We go off the +X (audio-left) side.
+        private float _trackPitEdge;
         private float _carHalfWidth;
         private float _offTrackTargetX;
         private bool _offTrackReached;
@@ -234,17 +238,17 @@ namespace TopSpeed.Drive.Session.Systems
             _pitEntryY = _car.PositionY;
             var road = _track.RoadAtPosition(_pitEntryY);
             _pitRoadCenterX = (road.Left + road.Right) * 0.5f;
-            _steerBackStarted = false;
 
             if (!_hasPitLane)
             {
-                _trackLeftEdge = Math.Min(road.Left, road.Right);
+                _pitEntryRoad = road;
+                _trackPitEdge = Math.Min(road.Left, road.Right);
                 _carHalfWidth = _car.WidthM / 2f;
-                _offTrackTargetX = _trackLeftEdge - _carHalfWidth;
+                _offTrackTargetX = _trackPitEdge - _carHalfWidth;
                 _offTrackReached = false;
-                _listenerCurrentX = _pitEntryX;
-                ListenerXOverride = _pitEntryX;
-                _pitController.SteerTargetX = _offTrackTargetX;
+                _listenerCurrentX = _pitRoadCenterX;
+                ListenerXOverride = _pitRoadCenterX;
+                _pitController.SteerTargetX = null; // X is managed via SetPosition
             }
             else
             {
@@ -264,7 +268,15 @@ namespace TopSpeed.Drive.Session.Systems
         {
             if (!_hasPitLane)
             {
-                _car.SetPosition(_car.PositionX, _pitEntryY);
+                var xProgress = Math.Min(1f, _timer / OffTrackMoveSeconds);
+                var carX = _pitEntryX + (_offTrackTargetX - _pitEntryX) * xProgress;
+                _car.SetPosition(carX, _pitEntryY);
+                EvaluateWithWideRoad();
+                if (!_offTrackReached && xProgress >= 1f)
+                {
+                    _offTrackReached = true;
+                    _listenerCurrentX = _pitRoadCenterX;
+                }
                 UpdateEnteringLaneListener(elapsed);
             }
 
@@ -290,19 +302,13 @@ namespace TopSpeed.Drive.Session.Systems
         {
             if (!_offTrackReached)
             {
-                // Phase A: listener stays at pit entry X while car steers off-track to the left.
-                // Player hears the car moving left in stereo.
-                ListenerXOverride = _pitEntryX;
-                if (_car.PositionX <= _offTrackTargetX)
-                {
-                    _offTrackReached = true;
-                    _listenerCurrentX = _pitEntryX;
-                }
+                // Listener stays at track center while car moves off-track to the left.
+                // Player hears the car panning left in stereo.
+                ListenerXOverride = _pitRoadCenterX;
             }
             else
             {
-                // Phase B: listener lerps toward the car's off-track position.
-                // Effect: car "comes back to center" of player's stereo field.
+                // Car is now off-track; lerp listener toward it so it re-centers in stereo.
                 LerpListenerToward(_offTrackTargetX, elapsed);
             }
         }
@@ -311,7 +317,8 @@ namespace TopSpeed.Drive.Session.Systems
         {
             if (!_hasPitLane)
             {
-                _car.SetPosition(_car.PositionX, _pitEntryY);
+                _car.SetPosition(_offTrackTargetX, _pitEntryY);
+                EvaluateWithWideRoad();
                 LerpListenerToward(_offTrackTargetX, elapsed);
             }
 
@@ -373,31 +380,36 @@ namespace TopSpeed.Drive.Session.Systems
         {
             if (!_hasPitLane)
             {
-                _car.SetPosition(_car.PositionX, _pitEntryY);
-
-                if (!_steerBackStarted)
+                if (_timer < ExitStartMoveSeconds)
                 {
-                    // Hold listener at off-track position until the 14-second mark.
-                    ListenerXOverride = _offTrackTargetX;
+                    // 0–14s: car held off-track, listener tracks car position.
+                    _car.SetPosition(_offTrackTargetX, _pitEntryY);
                     _listenerCurrentX = _offTrackTargetX;
+                    ListenerXOverride = _offTrackTargetX;
                 }
                 else
                 {
-                    // Follow the car directly as it steers back toward _pitEntryX.
-                    // At the 15-second transition, ListenerXOverride will be null'd in
-                    // CompletePitExit, and the Listener subsystem resumes from _car.PositionX
-                    // seamlessly since we've been tracking it.
-                    ListenerXOverride = _car.PositionX;
+                    // 14–15s: car moves back onto the track.
+                    var xProgress = Math.Min(1f, (_timer - ExitStartMoveSeconds) /
+                        (ExitingLaneDurationSeconds - ExitStartMoveSeconds));
+                    var carX = _offTrackTargetX + (_pitEntryX - _offTrackTargetX) * xProgress;
+                    _car.SetPosition(carX, _pitEntryY);
+
+                    // Listener follows car after a 0.5s delay so car is heard panning right first.
+                    if (_timer >= ExitStartMoveSeconds + ListenerFollowDelaySeconds)
+                    {
+                        _listenerCurrentX = carX;
+                        ListenerXOverride = carX;
+                    }
+                    else
+                    {
+                        ListenerXOverride = _offTrackTargetX;
+                    }
                 }
+                EvaluateWithWideRoad();
             }
 
             _timer += elapsed;
-
-            if (!_steerBackStarted && _timer >= ExitingLaneDurationSeconds - 1f)
-            {
-                _steerBackStarted = true;
-                _pitController.SteerTargetX = _pitEntryX;
-            }
 
             if (_timer < ExitingLaneDurationSeconds)
                 return;
@@ -437,6 +449,14 @@ namespace TopSpeed.Drive.Session.Systems
             _choiceReceived = false;
             _workStarted = false;
             NeedsChoice = false;
+        }
+
+        private void EvaluateWithWideRoad()
+        {
+            var wideRoad = _pitEntryRoad;
+            wideRoad.Left = _pitEntryRoad.Left - 1000f;
+            wideRoad.Right = _pitEntryRoad.Right + 1000f;
+            _car.Evaluate(wideRoad);
         }
 
         private void LerpListenerToward(float targetX, float elapsed)
