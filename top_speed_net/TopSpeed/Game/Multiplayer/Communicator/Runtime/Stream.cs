@@ -45,7 +45,7 @@ namespace TopSpeed.Game.Multiplayer.Communicator
                     busName: AudioEngineOptions.RadioBusName,
                     spatialize: false,
                     useHrtf: false);
-                _source.SetVolumePercent(settings, AudioVolumeCategory.Radio, 100);
+                _source.SetVolumePercent(settings, AudioVolumeCategory.Communicator, 100);
             }
 
             public uint StreamId { get; }
