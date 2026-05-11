@@ -2,6 +2,7 @@ using System;
 using SoundFlow.Backends.MiniAudio;
 using SoundFlow.Enums;
 using SoundFlow.Structs;
+using TopSpeed.Input;
 using TopSpeed.Protocol;
 
 namespace TopSpeed.Game.Multiplayer.Communicator
@@ -158,6 +159,8 @@ namespace TopSpeed.Game.Multiplayer.Communicator
             if (frameCount <= 0)
                 return;
 
+            var gain = GetCaptureInputGain();
+
             lock (_captureLock)
             {
                 for (var frame = 0; frame < frameCount; frame++)
@@ -167,6 +170,8 @@ namespace TopSpeed.Game.Multiplayer.Communicator
                     for (var ch = 0; ch < channels; ch++)
                         mixed += samples[baseIndex + ch];
                     mixed /= channels;
+
+                    mixed *= gain;
 
                     if (mixed < -1f)
                         mixed = -1f;
@@ -182,6 +187,16 @@ namespace TopSpeed.Game.Multiplayer.Communicator
                     _capturedSamples.RemoveRange(0, trim);
                 }
             }
+        }
+
+        private float GetCaptureInputGain()
+        {
+            var percent = _settings.VoiceInputGainPercent;
+            if (percent < DriveSettings.MinVoiceInputGainPercent)
+                percent = DriveSettings.MinVoiceInputGainPercent;
+            else if (percent > DriveSettings.MaxVoiceInputGainPercent)
+                percent = DriveSettings.MaxVoiceInputGainPercent;
+            return percent / 100f;
         }
 
         private bool TryReadCapturedFrame(short[] target)
