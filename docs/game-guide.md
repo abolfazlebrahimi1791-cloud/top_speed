@@ -458,36 +458,46 @@ The following actions are available for the host only:
 
 "Add"/"Remove a bot": Adds or removes a bot, if the room type allows that. They are hidden if the room type is either "race without bots" or "one-on-one without bots".
 
-### Chat, history, and ping
-The new game adds text chat features, globally and per-room chat, as well as the ability to check the current ping.
+### Chat, history, voice, and ping
+The remake adds text chat (global and per-room), voice chat through the communicator described in section 13, and a quick way to check your current ping. Each of these has its own controls, but they all share the same multiplayer history buffers — every chat message, server announcement, and room event you receive is stored in a history category you can scroll back through later.
 
-When you are in the multiplayer lobby, on desktop the menu has 2 screens. The first screen is where all normal options are located.
+The default shortcut to open the global chat on keyboard is the slash (`/`) key. Room chat is opened with the backslash (`\`) key while you are inside a room. To check the ping, press F1.
 
-The second screen is where all buffers such as chat and server messages are located. You switch between screens with the Tab key.
+Voice chat lives in the communicator. Section 13 covers it in full; in short, Ctrl+Shift+C turns it on and off, V is push-to-talk, and Ctrl+Shift+V toggles voice activation. The communicator shares the multiplayer menu top zone on mobile with the chat history and ping gestures.
 
-The default shortcut to open the global chat feature on keyboard is the slash (/) key.
+#### Two ways to navigate history buffers
+History buffers (global chat, room chat, server messages, room events) can be reviewed in two different ways on desktop. Pick whichever fits the moment — both end up in the same place.
 
-Room chat is accessed using the backslash (\) key on the keyboard.
+The first way is the dedicated history screen. The multiplayer lobby and the in-room controls each have two screens on desktop: the first screen holds normal menu options, and the second screen is the history buffer. Press Tab to move to the next screen and Shift+Tab to move back. On the history screen, every entry appears as a normal menu item, so you can browse messages with the usual Up Arrow / Down Arrow keys (or the menu navigation gestures on mobile in the top zone). Activating an entry copies it to the clipboard.
 
-To check the ping, press F1 on the keyboard.
+The second way is the inline history shortcuts. These work anywhere in the multiplayer menus (and during a multiplayer race, for the in-race overlay), without having to switch screens. They are the fastest way to glance back at a message while you are doing something else:
 
-The multiplayer menus also host the communicator (the voice and frequency-based audio device described in section 13). The communicator's keyboard shortcuts and mobile gestures share the same top-zone layout that chat history and ping use; see section 13 for the full controls and section 24.9 for the quick reference.
+- `,` (comma) — previous history item in the current category.
+- `.` (period) — next history item in the current category.
+- `Shift+,` — first history item in the current category.
+- `Shift+.` — last history item in the current category.
+- `[` — previous history category (e.g. global chat → server messages).
+- `]` — next history category.
+- `Ctrl+Space` — copy the currently focused history item to the clipboard.
 
-On mobile multiplayer menus, the top zone handles chat history and chat shortcuts, while the bottom zone keeps normal menu navigation.
+When you change category with `[` or `]`, the game plays a short buffer-switch cue and announces the new category. Item navigation announces the message text. Both styles share the same focused item: if you scroll on the history screen and then leave it, `,` / `.` continue from where you stopped.
 
-This layout is commonly used on mobile to split the screen into different areas. The same layout is used for driving controls.
+#### Mobile layout
+On mobile, the multiplayer menus are split into two zones. The bottom zone is for normal menu navigation (move, activate, back out). The top zone is reserved for history buffers, chat shortcuts, the communicator, and ping — the same conceptual split is used on desktop with Tab, but on mobile the two zones are on the screen at the same time.
 
-In the multiplayer lobby on mobile, the top zone controls buffers and chat features. The following is a list of gestures related to this section.
+All gestures below assume you hold the phone in landscape mode, and they only fire when the gesture starts inside the top zone:
 
-In the top zone, you switch between different buffers by swiping up or down with one finger.
+- Swipe up or down with one finger: switch to the previous or next history category.
+- Swipe left or right with one finger: move to the previous or next history item in the current category.
+- Two-finger swipe right: open the global chat input.
+- Two-finger swipe left: open the room chat input (only when you are inside a room).
+- Double tap with one finger: check the current ping.
+- Two-finger swipe down: toggle the communicator on or off (see section 13).
+- Two-finger swipe up: open frequency input for the communicator.
+- Three-finger tap: speak the current communicator frequency.
+- Two-finger double tap: toggle voice activation on the communicator.
 
-To navigate between items in the selected buffer, swipe left or right with one finger in the top zone.
-
-To open the global chat, swipe right with 2 fingers.
-
-To open the room chat if you are in a room, swipe left with 2 fingers.
-
-All gestures here assume that you hold the phone in landscape mode, and all gestures mentioned in this section explicitly work only in the top zone of the screen.
+This is the same multiplayer top-zone layout the driving controls use during a multiplayer race, so the buffer and communicator gestures you learn in the lobby keep working once a race starts.
 
 ### List of common community servers
 These servers are fully maintained by community members and I myself have no control on any of these servers in any way. They exist for everyone to quickly connect and play with their friends without needing to host a server.
@@ -1308,21 +1318,37 @@ Back out of the multiplayer menu:
 Desktop: Escape.
 Mobile: Swipe down with one finger in the multiplayer bottom zone.
 
-Switch to next chat history category:
-Desktop: Right Arrow in chat history view.
+Open the history buffer screen (chat, server messages, room events):
+Desktop: Tab to move forward to the next screen, Shift+Tab to move back. The history buffer is the second screen of the multiplayer lobby and the in-room controls.
+Mobile: The history buffer lives in the top zone of the multiplayer menu; there is no separate screen to switch to.
+
+Switch to next history category:
+Desktop: `]` (right bracket).
 Mobile: Swipe up with one finger in the multiplayer top zone.
 
-Switch to previous chat history category:
-Desktop: Left Arrow in chat history view.
+Switch to previous history category:
+Desktop: `[` (left bracket).
 Mobile: Swipe down with one finger in the multiplayer top zone.
 
-Move to next history message:
-Desktop: Right Arrow in the selected history category.
+Move to next history item:
+Desktop: `.` (period) anywhere in multiplayer menus, or Down Arrow on the history buffer screen.
 Mobile: Swipe right with one finger in the multiplayer top zone.
 
-Move to previous history message:
-Desktop: Left Arrow in the selected history category.
+Move to previous history item:
+Desktop: `,` (comma) anywhere in multiplayer menus, or Up Arrow on the history buffer screen.
 Mobile: Swipe left with one finger in the multiplayer top zone.
+
+Jump to the last history item in the current category:
+Desktop: Shift+. (Shift + period).
+Mobile: No dedicated gesture; use the menu navigation on the history buffer screen to jump to the end.
+
+Jump to the first history item in the current category:
+Desktop: Shift+, (Shift + comma).
+Mobile: No dedicated gesture; use the menu navigation on the history buffer screen to jump to the start.
+
+Copy the focused history item to the clipboard:
+Desktop: Ctrl+Space, or activate the focused entry on the history buffer screen (Enter).
+Mobile: Activate the focused entry on the history buffer screen.
 
 Check ping:
 Desktop: F1.
@@ -1335,6 +1361,10 @@ Mobile: Two-finger swipe right in the multiplayer top zone.
 Open room chat input:
 Desktop: Backslash (`\`) shortcut while in room.
 Mobile: Two-finger swipe left in the multiplayer top zone.
+
+View current room game rules:
+Desktop: R while inside a room.
+Mobile: No dedicated gesture.
 
 ### 24.8 Multiplayer Race Overlay Controls
 Open global chat during multiplayer race:
@@ -1349,8 +1379,10 @@ Open quit prompt during multiplayer race:
 Desktop: Escape.
 Mobile: Swipe down with one finger in the top-left information zone. This is the race back-out gesture.
 
+In addition to the controls above, the inline history shortcuts (`,` `.` `Shift+,` `Shift+.` `[` `]` `Ctrl+Space`) and the core communicator shortcuts (Ctrl+Shift+C, Ctrl+Shift+F, F, V, Ctrl+Shift+V) keep working during a multiplayer race. Use them to scroll back through chat or talk to other players without leaving the driving panels. The streaming media shortcuts (Ctrl+O, Ctrl+F, Ctrl+P, Ctrl+L, Ctrl+S, Ctrl+Page Up / Page Down, Ctrl+Up / Down) are menu-only and do not respond during a race.
+
 ### 24.9 Communicator Controls
-These controls are available whenever the multiplayer menu is on screen (lobby or inside a room). They are not driving controls and do not work from the in-race driving panels. Section 13 explains the feature itself.
+These controls are available whenever you are in the multiplayer lobby or inside a room. The core communicator controls (toggle, set frequency, announce frequency, push to talk, voice activation) also stay active during a multiplayer race, so you can talk to other players without leaving the driving panels. The streaming media controls listed at the end of this section only respond from the multiplayer menus, not during a race. Section 13 explains the feature itself.
 
 Toggle communicator on or off:
 Desktop: Ctrl+Shift+C.
