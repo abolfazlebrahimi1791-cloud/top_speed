@@ -6,17 +6,10 @@ namespace TopSpeed.Runtime
 {
     internal sealed class LoopHost : ILoopHost
     {
-        // 8 ms (125 fps) race tick needs the Windows scheduler at its 1 ms
-        // resolution; any longer interval is fine on the default 15 ms tick and
-        // releasing high-resolution mode there is what stops the kernel timer
-        // from waking the CPU 1000 times a second while the game is idle.
-        private const int HighResolutionIntervalThresholdMs = 8;
-
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private Thread? _thread;
         private volatile bool _running;
         private long _lastTicks;
-        private bool _highResolutionRequested;
         private Action<float>? _onTick;
         private Func<int>? _resolveIntervalMs;
 
@@ -56,7 +49,6 @@ namespace TopSpeed.Runtime
             _stopwatch.Stop();
             _onTick = null;
             _resolveIntervalMs = null;
-            ReleaseHighResolutionIfNeeded();
         }
 
         public void Dispose()
@@ -83,41 +75,8 @@ namespace TopSpeed.Runtime
                 var intervalMs = resolveIntervalMs();
                 if (intervalMs <= 0)
                     intervalMs = 8;
-                ApplyHighResolutionForInterval(intervalMs);
                 Thread.Sleep(intervalMs);
             }
-
-            ReleaseHighResolutionIfNeeded();
-        }
-
-        private void ApplyHighResolutionForInterval(int intervalMs)
-        {
-            var shouldRequest = intervalMs <= HighResolutionIntervalThresholdMs;
-            if (shouldRequest == _highResolutionRequested)
-                return;
-
-            if (shouldRequest)
-            {
-                WindowsTimerResolution.RequestHighResolution();
-                _highResolutionRequested = true;
-            }
-            else
-            {
-                WindowsTimerResolution.ReleaseHighResolution();
-                _highResolutionRequested = false;
-            }
-        }
-
-        private void ReleaseHighResolutionIfNeeded()
-        {
-            if (!_highResolutionRequested)
-                return;
-
-            WindowsTimerResolution.ReleaseHighResolution();
-            _highResolutionRequested = false;
         }
     }
 }
-
-
-

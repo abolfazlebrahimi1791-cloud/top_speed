@@ -36,6 +36,7 @@ namespace TopSpeed
                 Application.SetCompatibleTextRenderingDefault(false);
 #endif
 
+                WindowsTimerResolution.EnablePermanentHighResolution();
                 NativeLibraryBootstrap.Initialize();
 
 #if WINDOWS
@@ -63,6 +64,10 @@ namespace TopSpeed
             catch (Exception ex)
             {
                 HandleException(ex);
+            }
+            finally
+            {
+                WindowsTimerResolution.DisablePermanentHighResolution();
             }
         }
 

@@ -1,52 +1,39 @@
 #if WINDOWS
-using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace TopSpeed.Runtime
 {
-    // Windows system-timer resolution is global to the process and affects every
-    // Thread.Sleep / Wait the app issues. Holding 1 ms tick continuously also
-    // forces the Windows kernel scheduler into a 1 ms heartbeat for as long as
-    // the process is alive, which shows up as elevated idle CPU. The game only
-    // really needs 1 ms precision during a race (so 8 ms / 125 fps ticks are
-    // honored), not while sitting in a menu. This wrapper lets the game request
-    // and release high resolution dynamically without losing the request from
-    // any single caller.
+    // Windows system-timer resolution is global to the process and affects
+    // every Thread.Sleep / Wait the app issues. The default ~15.6 ms scheduler
+    // tick is too coarse for the race game loop (8 ms / 125 fps) and for the
+    // multiplayer poll thread (5 ms), so we request 1 ms resolution once for
+    // the lifetime of the process. timeBeginPeriod is reference-counted by
+    // the OS; pairing it with timeEndPeriod on shutdown keeps things tidy if
+    // another component also requested high resolution.
     internal static class WindowsTimerResolution
     {
         private const uint HighResolutionMilliseconds = 1;
-        private static int _refCount;
-        private static bool _activeHighResolution;
+        private static int _activated;
 
-        public static void RequestHighResolution()
+        public static void EnablePermanentHighResolution()
         {
-            if (Interlocked.Increment(ref _refCount) != 1)
+            if (Interlocked.Exchange(ref _activated, 1) != 0)
                 return;
 
             try
             {
-                if (timeBeginPeriod(HighResolutionMilliseconds) == 0)
-                    _activeHighResolution = true;
+                timeBeginPeriod(HighResolutionMilliseconds);
             }
             catch
             {
-                _activeHighResolution = false;
+                Interlocked.Exchange(ref _activated, 0);
             }
         }
 
-        public static void ReleaseHighResolution()
+        public static void DisablePermanentHighResolution()
         {
-            var remaining = Interlocked.Decrement(ref _refCount);
-            if (remaining < 0)
-            {
-                Interlocked.Exchange(ref _refCount, 0);
-                return;
-            }
-            if (remaining != 0)
-                return;
-
-            if (!_activeHighResolution)
+            if (Interlocked.Exchange(ref _activated, 0) != 1)
                 return;
 
             try
@@ -56,7 +43,6 @@ namespace TopSpeed.Runtime
             catch
             {
             }
-            _activeHighResolution = false;
         }
 
         [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
@@ -73,11 +59,11 @@ namespace TopSpeed.Runtime
     // requests are no-ops so callers can use the same API everywhere.
     internal static class WindowsTimerResolution
     {
-        public static void RequestHighResolution()
+        public static void EnablePermanentHighResolution()
         {
         }
 
-        public static void ReleaseHighResolution()
+        public static void DisablePermanentHighResolution()
         {
         }
     }
