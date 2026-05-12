@@ -6,9 +6,11 @@ namespace TopSpeed.Network.Session
 {
     internal sealed class Loop : IDisposable
     {
-        // 15 ms keeps voice (50 fps), live-stream (50 fps), and race snapshots responsive
-        // while letting the polling thread sleep instead of waking 1000 times a second.
-        private const int PollIntervalMs = 15;
+        // 5 ms keeps the added round-trip latency under 5 ms (so the displayed
+        // ping stays within a few ms of the true value even on low-latency LAN)
+        // while still letting the polling thread sleep instead of waking 1000
+        // times a second.
+        private const int PollIntervalMs = 5;
 
         private readonly CancellationTokenSource _cts;
         private readonly Task _pollTask;
