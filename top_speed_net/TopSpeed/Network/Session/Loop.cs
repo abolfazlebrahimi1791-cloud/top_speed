@@ -6,6 +6,10 @@ namespace TopSpeed.Network.Session
 {
     internal sealed class Loop : IDisposable
     {
+        // 15 ms keeps voice (50 fps), live-stream (50 fps), and race snapshots responsive
+        // while letting the polling thread sleep instead of waking 1000 times a second.
+        private const int PollIntervalMs = 15;
+
         private readonly CancellationTokenSource _cts;
         private readonly Task _pollTask;
         private readonly Task _keepAliveTask;
@@ -46,11 +50,13 @@ namespace TopSpeed.Network.Session
 
         private void PollLoop(Action poll, CancellationToken token)
         {
+            using var wake = new ManualResetEventSlim(false);
+            using var registration = token.Register(() => wake.Set());
             while (!token.IsCancellationRequested)
             {
                 poll();
                 _drain();
-                Thread.Sleep(1);
+                wake.Wait(PollIntervalMs);
             }
 
             _drain();

@@ -110,7 +110,11 @@ namespace TopSpeed.Game
         private Action<TextInputResult>? _textInputPromptCallback;
         private SoundAsset? _raceWinSound;
         public bool IsModalInputActive { get; private set; }
-        internal int LoopIntervalMs => IsMenuState(_state) ? 15 : 8;
+        // Race state needs an 8 ms (125 fps) tick for steering smoothness and audio cue timing.
+        // Menu state is fully event-driven from the user's POV, so a 33 ms (30 fps) tick is
+        // plenty for shortcut handling / dialog updates and lets the game thread sleep most of
+        // the time when the user leaves the game idle on the main menu / lobby.
+        internal int LoopIntervalMs => IsMenuState(_state) ? 33 : 8;
 
         private const string CalibrationIntroMenuId = "calibration_intro";
         private const string CalibrationSampleMenuId = "calibration_sample";
