@@ -25,7 +25,7 @@ namespace TopSpeed.Menu
             if (TryHandleShortcut(input, current, in context))
                 return MenuAction.None;
 
-            var suppressLetterNavigation = ShouldSuppressLetterNavigation(input);
+            var suppressLetterNavigation = ShouldSuppressLetterNavigation(input, in context);
             var result = current.Update(input, suppressLetterNavigation);
 
             if (result.BackRequested)
@@ -65,14 +65,14 @@ namespace TopSpeed.Menu
             return true;
         }
 
-        private bool ShouldSuppressLetterNavigation(IInputService input)
+        private bool ShouldSuppressLetterNavigation(IInputService input, in ShortcutContext context)
         {
             if (!MenuInputUtil.TryGetPressedLetter(input, out var letter))
                 return false;
             if (!MenuInputUtil.TryGetLetterKey(letter, out var key))
                 return false;
 
-            return _shortcutCatalog.HasAnyUnmodifiedBindingForKey(key);
+            return _shortcutCatalog.HasUnmodifiedBindingForKeyInContext(key, in context);
         }
 
         private MenuAction HandleClose(MenuScreen current, MenuCloseSource source, CloseKind kind)
