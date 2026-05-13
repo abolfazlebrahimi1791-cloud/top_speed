@@ -635,9 +635,11 @@ The server has a small set of feature flags that turn major features on or off f
 Changes to feature flags apply to traffic that arrives after the flag is changed. Players already in the middle of a transmission, chat send, or upload usually finish their current action; new ones honor the new flag.
 
 ### Hosting custom tracks from the server
-The dedicated server can hold a library of custom tracks that every client sees when the room host opens the custom track catalog. Drop `*.tsm` files into a `Tracks` folder placed next to the server executable. Subfolders inside `Tracks` are scanned recursively, so you can organize the library however you like.
+The dedicated server can hold a library of custom tracks that every client sees when the room host opens the custom track catalog. To do this, create a folder named `Tracks` next to the server executable and drop one complete track package into it per track — that is, the whole folder you would normally put under your game's `Tracks` directory, with the track's `.tsm` file and every sound or other asset it references kept in the same place relative to the `.tsm`. A loose `.tsm` on its own is not enough as soon as the track references any external assets; the server resolves sound paths relative to the `.tsm`, so the assets have to travel with it.
 
-The server scans `Tracks` at startup and again whenever a client requests the custom track catalog. New files appear on the next catalog request; you do not have to restart the server for them to show up, but a restart is the cleanest way to refresh after a bulk update. Files with broken contents or unsupported formats are skipped with a warning in the server console.
+Subfolders inside `Tracks` are scanned recursively, so a layout like `Tracks/<track-name>/track.tsm` (plus any sound subfolders the package needs) works, and you can group packages into category folders if you want. The server reads each package's `.tsm` at scan time and serves it to clients as one self-contained download.
+
+The server scans `Tracks` at startup and again whenever a client requests the custom track catalog. New packages appear on the next catalog request; you do not have to restart the server for them to show up, but a restart is the cleanest way to refresh after a bulk update. Packages with broken or unsupported `.tsm` contents — including a `.tsm` that references sound files that are not next to it — are skipped with a warning in the server console.
 
 In addition to the static `Tracks` folder, the server accepts uploads from room hosts who use "Upload a local track" in their room. Uploaded packages are stored server-side alongside the static library and offered through the same catalog. Section 16 covers the client-side flow in detail.
 
