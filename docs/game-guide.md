@@ -458,12 +458,10 @@ The following actions are available for the host only:
 
 "Add"/"Remove a bot": Adds or removes a bot, if the room type allows that. They are hidden if the room type is either "race without bots" or "one-on-one without bots".
 
-### Chat, history, voice, and ping
-The remake adds text chat (global and per-room), voice chat through the communicator described in section 13, and a quick way to check your current ping. Each of these has its own controls, but they all share the same multiplayer history buffers — every chat message, server announcement, and room event you receive is stored in a history category you can scroll back through later.
+### Chat, history, and ping
+The remake adds text chat (global and per-room), voice chat through the communicator covered in section 13, and a quick way to check your current ping. Each of these has its own controls, but they all share the same multiplayer history buffers — every chat message, server announcement, and room event you receive is stored in a history category you can scroll back through later.
 
 The default shortcut to open the global chat on keyboard is the slash (`/`) key. Room chat is opened with the backslash (`\`) key while you are inside a room. To check the ping, press F1.
-
-Voice chat lives in the communicator. Section 13 covers it in full; in short, Ctrl+Shift+C turns it on and off, V is push-to-talk, and Ctrl+Shift+V toggles voice activation. The communicator shares the multiplayer menu top zone on mobile with the chat history and ping gestures.
 
 #### Two ways to navigate history buffers
 History buffers (global chat, room chat, server messages, room events) can be reviewed in two different ways on desktop. Pick whichever fits the moment — both end up in the same place.
@@ -547,32 +545,23 @@ The communicator has two transmit modes that are mutually exclusive:
 - Push-to-talk (PTT) is the default. You hold a key or gesture while you speak; the moment you release it, transmission stops.
 - Voice activation (VOX) is a toggle. While it is on, the communicator transmits continuously with whatever the microphone is capturing. VOX does not use a voice detector to gate transmission; it stays open until you turn it off.
 
-Audio is encoded as 48 kHz mono Opus in 20 ms frames. The encoder runs the moment the communicator is armed (turned on, tuned to a non-zero frequency, and connected), so the operating system microphone is opened as soon as the communicator becomes ready and is released the moment the communicator is turned off. If you turn the communicator off, the microphone is released too — nothing is captured.
+Audio is encoded as 48 kHz mono Opus in 20 ms frames. The encoder runs the moment the communicator is armed (turned on, tuned to a non-zero frequency, and connected), so the operating system microphone is opened as soon as the communicator becomes ready and is released the moment the communicator turns off. The communicator also turns off automatically when you disconnect from the server, when you press Ctrl+Shift+C to turn it off (which also turns voice activation off), or when you set the frequency to 0.0; in each of these cases the microphone is released so nothing is captured.
 
-When you start transmitting, you should hear a short open cue locally. When you stop, you hear a close cue. Remote listeners hear a separate short release cue when you let go of PTT so they know you finished talking.
+You hear a short local cue when transmission opens and another when it closes; remote listeners hear a separate release cue after you let go of PTT so they know you finished talking. Turning the communicator on or off also plays its own short cue. All communicator cues and remote voice playback share the same Communicator volume slider in the audio settings.
 
-### Turning it on and using it (desktop)
+### Turning it on and using it
+All communicator gestures on mobile live in the multiplayer menu top zone, the same zone used for chat history and ping. They work whenever the multiplayer menu is on screen, including the lobby and inside a room.
+
 1. Connect to a server.
-2. Press Ctrl+Shift+C to turn the communicator on or off.
-3. The default frequency is 1.0. To change it, press Ctrl+Shift+F and type a value between 0.0 and 1000.0.
-4. Press F to hear the current frequency announced.
-5. To talk, hold V. The communicator stays open while V is held and stops the moment you release it.
-6. To switch to voice activation instead, press Ctrl+Shift+V. The communicator now transmits continuously until you press Ctrl+Shift+V again.
+2. Turn the communicator on or off with Ctrl+Shift+C on desktop, or a two-finger swipe down in the multiplayer top zone on mobile.
+3. The default frequency is 1.0. To change it, press Ctrl+Shift+F on desktop, or two-finger swipe up in the multiplayer top zone on mobile, then type a value between 0.0 and 1000.0.
+4. To hear the current frequency announced, press F on desktop, or three-finger tap in the multiplayer top zone on mobile.
+5. To talk, hold V on desktop. On mobile, single-finger tap in the multiplayer top zone, then within about 0.4 seconds press and hold a single finger in the same zone; the communicator transmits while the second touch is held and stops the moment you release.
+6. To switch to voice activation instead, press Ctrl+Shift+V on desktop, or two-finger double tap in the multiplayer top zone on mobile. The communicator now transmits continuously until you toggle it off again.
 
-Push-to-talk explicitly ignores key presses while Ctrl, Shift, or Alt are held, so toggling VOX with Ctrl+Shift+V never bleeds into the PTT path. The frequency announcement (F) and PTT (V) are deliberately separate keys: a tap on F speaks the current frequency without transmitting anything; pressing and holding V transmits without speaking the frequency.
+Push-to-talk explicitly ignores key presses while Ctrl, Shift, or Alt are held, so toggling VOX with Ctrl+Shift+V never bleeds into the PTT path. The frequency announcement (F) and PTT (V) are deliberately separate keys: a tap on F speaks the current frequency without transmitting anything; pressing and holding V transmits without speaking the frequency. The mobile PTT gesture is intentionally a tap followed by a press-and-hold so it cannot trigger from a single accidental touch, and the ping gesture is briefly suppressed while it is active so the press-and-hold is not interpreted as the start of a triple-tap ping check.
 
 Changing frequency does not break an active transmission. If you change frequency while talking, the communicator restarts the transmission on the new value, so listeners on the old frequency hear it end and listeners on the new frequency hear it begin.
-
-### Mobile gestures
-All communicator gestures live in the multiplayer menu top zone, the same zone used for chat history and ping. They work whenever the multiplayer menu is on screen, including the lobby and inside a room.
-
-- Two-finger swipe down in the multiplayer top zone: toggle the communicator on or off.
-- Two-finger swipe up in the multiplayer top zone: open frequency input. Type a value between 0.0 and 1000.0.
-- Three-finger tap in the multiplayer top zone: speak the current frequency.
-- Two-finger double tap in the multiplayer top zone: toggle voice activation on or off.
-- Push-to-talk on mobile: single-finger tap in the multiplayer top zone, then within about 0.4 seconds press and hold a single finger in the same zone. The communicator transmits while the second touch is held; releasing it stops transmission.
-
-The PTT gesture is intentionally a tap followed by a press-and-hold so it cannot trigger from a single accidental touch. While the PTT gesture is active, the ping gesture is suppressed for a short window so the press-and-hold is not interpreted as the start of a triple-tap ping check.
 
 ### Volume
 The communicator has its own slider in the volume settings, separate from the in-vehicle radio. It controls how loud the communicator activation cues are and how loud other players sound when they speak through the communicator. The in-vehicle radio volume is unaffected.
@@ -604,22 +593,7 @@ While the communicator is on:
 
 Streamed media goes out on your current communicator frequency. Everyone tuned in hears it; everyone else does not. Folder loading is not recursive, like the in-vehicle radio: only files directly inside the chosen folder are added to the playlist.
 
-You cannot stream media and use voice at the same time. While media is playing on the communicator, voice transmission is paused; stopping or pausing the media releases the channel for voice again.
-
-### Cues you will hear
-- A short local open cue when the communicator first starts transmitting (your own ear only).
-- A short local close cue when the communicator stops transmitting.
-- A separate release cue on remote clients after you let go of PTT, so they know you finished.
-- Activation/deactivation cues when the communicator is turned on or off.
-
-All of these run through the Communicator volume slider, not the Radio slider.
-
-### What stops the communicator automatically
-- Disconnecting from the server.
-- Turning the communicator off with Ctrl+Shift+C (this also turns voice activation off).
-- Setting the frequency to 0.0.
-
-In all three cases the operating system microphone is released so no audio is captured while the communicator is off.
+Streaming media and talking work side by side. Holding push-to-talk (or transmitting through VOX) while media is playing sends your voice on the same frequency in parallel with the media, and remote listeners on that frequency hear both at once.
 
 ### Troubleshooting voice chat
 - Remote players hear nothing while I can hear my own open cue: check that both sides have the communicator on, that the frequency is the same on both ends (try pressing F on both clients), and that both clients are connected to the same server. The most common cause is a frequency mismatch.
