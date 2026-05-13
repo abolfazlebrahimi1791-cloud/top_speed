@@ -25,7 +25,8 @@ namespace TopSpeed.Menu
             if (TryHandleShortcut(input, current, in context))
                 return MenuAction.None;
 
-            var result = current.Update(input);
+            var suppressLetterNavigation = ShouldSuppressLetterNavigation(input);
+            var result = current.Update(input, suppressLetterNavigation);
 
             if (result.BackRequested)
                 return HandleClose(current, MenuCloseSource.Shortcut, CloseKind.Back);
@@ -62,6 +63,16 @@ namespace TopSpeed.Menu
             current.CancelPendingHint();
             action.Trigger();
             return true;
+        }
+
+        private bool ShouldSuppressLetterNavigation(IInputService input)
+        {
+            if (!MenuInputUtil.TryGetPressedLetter(input, out var letter))
+                return false;
+            if (!MenuInputUtil.TryGetLetterKey(letter, out var key))
+                return false;
+
+            return _shortcutCatalog.HasAnyUnmodifiedBindingForKey(key);
         }
 
         private MenuAction HandleClose(MenuScreen current, MenuCloseSource source, CloseKind kind)

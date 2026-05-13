@@ -27,6 +27,12 @@ namespace TopSpeed.Menu
             return false;
         }
 
+        public static bool TryGetLetterKey(char letter, out Key key)
+        {
+            key = ToLetterKey(char.ToUpperInvariant(letter));
+            return key != Key.Unknown;
+        }
+
         public static bool ItemStartsWithLetter(MenuItem item, char letter)
         {
             var text = item.GetDisplayText();

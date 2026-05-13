@@ -182,6 +182,21 @@ namespace TopSpeed.Shortcuts
             return true;
         }
 
+        public bool HasAnyUnmodifiedBindingForKey(Key key)
+        {
+            if (key == Key.Unknown)
+                return false;
+
+            foreach (var pair in _actions)
+            {
+                var action = pair.Value;
+                if (action.Key == key && action.Modifiers.IsEmpty)
+                    return true;
+            }
+
+            return false;
+        }
+
         public bool IsBindingInUseInGroup(string groupId, Key key, ShortcutModifiers modifiers, string ignoredActionId)
         {
             if (!TryGetGroupActionIds(groupId, out var actionIds))
