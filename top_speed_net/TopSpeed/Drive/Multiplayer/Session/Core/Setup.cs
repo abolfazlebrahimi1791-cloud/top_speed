@@ -66,7 +66,7 @@ namespace TopSpeed.Drive.Multiplayer
                 _settings,
                 GetRandomSoundBySlot,
                 _soundTurnEndDing,
-                QueueSound,
+                QueueRaceInfoSound,
                 (sessionEvent, delay) => _session!.QueueEvent(sessionEvent, delay));
 
             var pitStop = new PitStopSubsystem(
@@ -162,7 +162,7 @@ namespace TopSpeed.Drive.Multiplayer
                         AnnounceFinishOrder(playerNumber, ref positionFinish);
                         _positionFinish = positionFinish;
                     },
-                    SpeakIfLoaded,
+                    SpeakRaceInfoIfLoaded,
                     sendStarted => SendPlayerState(sendStarted),
                     SendCrash),
                 new SyncSubsystem(

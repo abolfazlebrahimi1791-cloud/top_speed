@@ -7,6 +7,10 @@ namespace TopSpeed.Input
 {
     internal sealed class DriveSettings
     {
+        public const int MinVoiceInputGainPercent = 0;
+        public const int MaxVoiceInputGainPercent = 400;
+        public const int DefaultVoiceInputGainPercent = 200;
+
         public DriveSettings()
         {
             RestoreDefaults();
@@ -39,12 +43,16 @@ namespace TopSpeed.Input
         public bool HrtfAudio { get; set; }
         public bool StereoWidening { get; set; }
         public bool AutoDetectAudioDeviceFormat { get; set; }
+        public string VoiceInputDeviceName { get; set; } = string.Empty;
+        public int VoiceInputGainPercent { get; set; }
         public bool RandomCustomTracks { get; set; }
         public bool RandomCustomVehicles { get; set; }
         public bool SingleRaceCustomVehicles { get; set; }
         public string LastServerAddress { get; set; } = string.Empty;
         public int DefaultServerPort { get; set; }
         public string DefaultCallSign { get; set; } = string.Empty;
+        public bool UseUpdateProxy { get; set; }
+        public string UpdateProxyUrlPrefix { get; set; } = string.Empty;
         public float ScreenReaderRateMs { get; set; }
         public ulong? SpeechBackendId { get; set; }
         public SpeechOutputMode SpeechMode { get; set; }
@@ -125,12 +133,16 @@ namespace TopSpeed.Input
             HrtfAudio = true;
             StereoWidening = false;
             AutoDetectAudioDeviceFormat = true;
+            VoiceInputDeviceName = string.Empty;
+            VoiceInputGainPercent = DefaultVoiceInputGainPercent;
             RandomCustomTracks = false;
             RandomCustomVehicles = false;
             SingleRaceCustomVehicles = false;
             LastServerAddress = string.Empty;
             DefaultServerPort = 28630;
             DefaultCallSign = string.Empty;
+            UseUpdateProxy = false;
+            UpdateProxyUrlPrefix = string.Empty;
             ScreenReaderRateMs = 0f;
             SpeechBackendId = null;
             SpeechMode = SpeechOutputMode.Speech;

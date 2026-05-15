@@ -53,7 +53,11 @@ namespace TopSpeed.Server.Network
         public uint MediaId { get; set; }
         public byte RadioVolumePercent { get; set; }
         public InMedia? IncomingMedia { get; set; }
+        public InMedia? IncomingCommunicatorMedia { get; set; }
+        public MediaBlob? CommunicatorMediaBlob { get; set; }
+        public CommunicatorMediaState? CommunicatorMedia { get; set; }
         public LiveState? Live { get; set; }
+        public VoiceState? Voice { get; set; }
         public DateTime LastHeartbeatUtc { get; set; }
         public DateTime? SuspendedUtc { get; private set; }
         public ConnectionLifecycleState LifecycleState { get; private set; }
@@ -144,6 +148,7 @@ namespace TopSpeed.Server.Network
             GameConnectionState = MultiplayerConnectionState.ConnectionLostSuspected;
             SuspendedUtc = DateTime.UtcNow;
             IncomingMedia = null;
+            IncomingCommunicatorMedia = null;
         }
 
         public void MarkReconnecting()
@@ -172,6 +177,9 @@ namespace TopSpeed.Server.Network
             ResumeToken = 0;
             SuspendedUtc = null;
             IncomingMedia = null;
+            IncomingCommunicatorMedia = null;
+            CommunicatorMediaBlob = null;
+            CommunicatorMedia = null;
         }
 
         public void SetDisconnectOutcome(MultiplayerDisconnectReason reason, MultiplayerConnectionState state)

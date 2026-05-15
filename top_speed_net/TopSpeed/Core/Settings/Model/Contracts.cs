@@ -71,6 +71,9 @@ namespace TopSpeed.Core.Settings
         [DataMember(Name = "onlineServerEventsPercent")]
         public int? OnlineServerEventsPercent { get; set; }
 
+        [DataMember(Name = "communicatorPercent")]
+        public int? CommunicatorPercent { get; set; }
+
         [DataMember(Name = "hrtfAudio")]
         public bool? HrtfAudio { get; set; }
 
@@ -79,6 +82,12 @@ namespace TopSpeed.Core.Settings
 
         [DataMember(Name = "autoDetectAudioDeviceFormat")]
         public bool? AutoDetectAudioDeviceFormat { get; set; }
+
+        [DataMember(Name = "voiceInputDevice")]
+        public string? VoiceInputDevice { get; set; }
+
+        [DataMember(Name = "voiceInputGainPercent")]
+        public int? VoiceInputGainPercent { get; set; }
 
     }
 
@@ -220,6 +229,8 @@ namespace TopSpeed.Core.Settings
         [DataMember(Name = "lastServerAddress")] public string? LastServerAddress { get; set; }
         [DataMember(Name = "defaultServerPort")] public int? DefaultServerPort { get; set; }
         [DataMember(Name = "defaultCallSign")] public string? DefaultCallSign { get; set; }
+        [DataMember(Name = "useUpdateProxy")] public bool? UseUpdateProxy { get; set; }
+        [DataMember(Name = "updateProxyUrlPrefix")] public string? UpdateProxyUrlPrefix { get; set; }
         [DataMember(Name = "savedServers")] public SettingsSavedServersDocument? SavedServers { get; set; }
     }
 

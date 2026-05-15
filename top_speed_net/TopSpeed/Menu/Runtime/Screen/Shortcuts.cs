@@ -1,5 +1,3 @@
-using TopSpeed.Input;
-
 namespace TopSpeed.Menu
 {
     internal sealed partial class MenuScreen
@@ -33,14 +31,14 @@ namespace TopSpeed.Menu
             return false;
         }
 
-        private bool TryHandleLetterNavigation(IInputService input)
+        private bool TryHandleLetterNavigation(in MenuLetterPress letterPress)
         {
+            if (!letterPress.HasLetter || letterPress.ReservedByShortcut)
+                return false;
             if (_items.Count == 0)
                 return false;
 
-            if (!MenuInputUtil.TryGetPressedLetter(input, out var letter))
-                return false;
-
+            var letter = letterPress.Letter;
             var start = _index == NoSelection ? 0 : (_index + 1) % _items.Count;
             for (var i = 0; i < _items.Count; i++)
             {
@@ -57,6 +55,3 @@ namespace TopSpeed.Menu
         }
     }
 }
-
-
-

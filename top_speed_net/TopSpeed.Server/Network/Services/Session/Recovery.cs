@@ -92,7 +92,7 @@ namespace TopSpeed.Server.Network
 
             public void SendInitialConnectionState(PlayerConnection player)
             {
-                _owner.SendStream(player, PacketSerializer.WritePlayerNumber(player.Id, 0), PacketStream.Control);
+                _owner.SendStream(player, PacketSerializer.WritePlayerNumber(player.Id, player.PlayerNumber), PacketStream.Control);
                 if (!string.IsNullOrWhiteSpace(_owner._config.Motd))
                     _owner.SendStream(player, PacketSerializer.WriteServerInfo(new PacketServerInfo { Motd = _owner._config.Motd }), PacketStream.Control);
 
@@ -120,6 +120,12 @@ namespace TopSpeed.Server.Network
                     player.MarkActive();
                     _owner._room.HandleStateRequest(player);
                 }
+
+                // Voice chat is relayed server-wide (lobby + every room), so a
+                // freshly-connected or resuming player needs to be told about
+                // every currently-active voice stream regardless of room state.
+                _owner.SyncVoiceTo(player);
+                _owner.SyncCommunicatorMediaTo(player);
 
                 if (player.RoomId.HasValue && _owner._rooms.ContainsKey(player.RoomId.Value))
                     player.MarkActive();

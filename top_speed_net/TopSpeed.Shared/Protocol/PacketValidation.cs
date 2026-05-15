@@ -140,6 +140,12 @@ namespace TopSpeed.Protocol
                 && begin.TotalBytes <= ProtocolConstants.MaxMediaBytes;
         }
 
+        public static bool IsValidCommunicatorMediaBegin(PacketPlayerMediaBegin begin)
+        {
+            return IsValidMediaBegin(begin)
+                && IsValidVoiceFrequencyTenths(begin.FrequencyTenths);
+        }
+
         public static bool IsValidMediaChunk(PacketPlayerMediaChunk chunk)
         {
             return chunk != null
@@ -159,6 +165,16 @@ namespace TopSpeed.Protocol
                 && IsValidPlayerNumber(end.PlayerNumber)
                 && end.MediaId != 0
                 && end.TransferId != 0;
+        }
+
+        public static bool IsValidCommunicatorMediaState(PacketPlayerCommunicatorMediaState state)
+        {
+            return state != null
+                && IsValidPlayerId(state.PlayerId)
+                && IsValidPlayerNumber(state.PlayerNumber)
+                && IsValidVoiceFrequencyTenths(state.FrequencyTenths)
+                && (!state.MediaLoaded || state.MediaId != 0)
+                && state.VolumePercent <= 100;
         }
 
         public static bool IsValidLiveStart(PacketPlayerLiveStart start)
@@ -186,6 +202,45 @@ namespace TopSpeed.Protocol
         }
 
         public static bool IsValidLiveStop(PacketPlayerLiveStop stop)
+        {
+            return stop != null
+                && IsValidPlayerId(stop.PlayerId)
+                && IsValidPlayerNumber(stop.PlayerNumber)
+                && stop.StreamId != 0;
+        }
+
+        public static bool IsValidVoiceFrequencyTenths(int value)
+        {
+            return value >= ProtocolConstants.VoiceFrequencyTenthsMin
+                   && value <= ProtocolConstants.VoiceFrequencyTenthsMax;
+        }
+
+        public static bool IsValidVoiceStart(PacketPlayerVoiceStart start)
+        {
+            return start != null
+                && IsValidPlayerId(start.PlayerId)
+                && IsValidPlayerNumber(start.PlayerNumber)
+                && start.StreamId != 0
+                && start.Codec == LiveCodec.Opus
+                && start.SampleRate == ProtocolConstants.VoiceSampleRate
+                && start.FrameMs == ProtocolConstants.VoiceFrameMs
+                && start.Channels >= ProtocolConstants.VoiceChannelsMin
+                && start.Channels <= ProtocolConstants.VoiceChannelsMax
+                && IsValidVoiceFrequencyTenths(start.FrequencyTenths);
+        }
+
+        public static bool IsValidVoiceFrame(PacketPlayerVoiceFrame frame)
+        {
+            return frame != null
+                && IsValidPlayerId(frame.PlayerId)
+                && IsValidPlayerNumber(frame.PlayerNumber)
+                && frame.StreamId != 0
+                && frame.Data != null
+                && frame.Data.Length > 0
+                && frame.Data.Length <= ProtocolConstants.MaxVoiceFrameBytes;
+        }
+
+        public static bool IsValidVoiceStop(PacketPlayerVoiceStop stop)
         {
             return stop != null
                 && IsValidPlayerId(stop.PlayerId)

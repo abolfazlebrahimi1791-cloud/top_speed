@@ -5,6 +5,31 @@ This file tracks new changes to the game for both client and server to make it e
 The game versioning follows a specific pattern by using year.month.day.revision, where revision is an incremental number if there is more than one release in a single day.
 
 
+## 2026.5.14.1
+### Game Changes
+- Added a full voice chat system to the game. Any player who is connected to a server can enable their communicator by pressing ctrl+shift+c to listen to other players, and either holding v or ctrl+shift+v to talk.
+- The communicator has a frequency, between 0.0 and 1000.0. The default public frequency is 1.0 which is by default all players are tuned to. You can read the current frequency by pressing f, and change it by pressing ctrl+f.
+- There are new settings in the audio to choose the default voice input device and Microphone gain.
+- Added a new category in the volume settings for communicator. This controls the loudness of communicator sounds as well as other players. This does not affect the radio.
+- You now have the ability to stream files anywhere using your communicator by pressing ctrl+f to load a folder, or ctrl+o to load a file, then playing it with ctrl+p. Shortcut keys are similar to the radio, except adding ctrl with the key. For example, toggle loop is ctrl+l.
+- Added a new quicker way of controling different volume categories, by pressing f6 and shift+f6 to switch between different categories, and f7, f8 + adding shift with those keys control the actual volume.
+- Added proxy support to the game when downloading updates or external requests.
+
+
+### Server Changes
+- Added voice chat support.
+- Added a new flag to control voice chat on the server level.
+
+
+## 2026.5.9.2
+### Game Changes
+- Fixed multiplayer voice chat: remote players could not hear each other at all. The communicator now works in the multiplayer lobby in addition to inside rooms. Anyone tuned to the same communicator frequency hears the transmission regardless of which room (or no room) they are in.
+- Removed the leftover `TOPSPEED_VOICE_DEBUG` opt-in voice-chat tracing introduced while diagnosing the regression above.
+
+### Server Changes
+- Voice chat is now relayed to every connected player on the server (filtered client-side by communicator frequency) instead of being scoped to a single room, so voice works in the lobby and across rooms.
+
+
 ## 2026.5.9.1
 ### Game Changes
 - Fixed the in-vehicle radio in multiplayer crashing when a track finishes and loops back to the start (notably with FLAC files). The fix is in the SoundFlow native FFmpeg wrapper: tail-of-stream codec/demuxer hiccups are now reported as graceful end-of-stream instead of as fatal decoder errors, so the radio source's `Seek(0)`+retry path recovers cleanly.

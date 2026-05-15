@@ -21,10 +21,12 @@ namespace TopSpeed.Menu
             if (helpRequested && current.TrySpeakCurrentHintOnDemand())
                 return MenuAction.None;
 
-            if (TryHandleShortcut(input, current))
+            var context = new ShortcutContext(current.Id, current.ActiveViewId);
+            if (TryHandleShortcut(input, current, in context))
                 return MenuAction.None;
 
-            var result = current.Update(input);
+            var letterPress = ResolveLetterPress(input, in context);
+            var result = current.Update(input, in letterPress);
 
             if (result.BackRequested)
                 return HandleClose(current, MenuCloseSource.Shortcut, CloseKind.Back);
@@ -53,15 +55,24 @@ namespace TopSpeed.Menu
             return item.Action;
         }
 
-        private bool TryHandleShortcut(IInputService input, MenuScreen current)
+        private bool TryHandleShortcut(IInputService input, MenuScreen current, in ShortcutContext context)
         {
-            var context = new ShortcutContext(current.Id, current.ActiveViewId);
             if (!_shortcutCatalog.TryResolveTriggeredAction(input, in context, out var action))
                 return false;
 
             current.CancelPendingHint();
             action.Trigger();
             return true;
+        }
+
+        private MenuLetterPress ResolveLetterPress(IInputService input, in ShortcutContext context)
+        {
+            if (!MenuInputUtil.TryGetPressedLetter(input, out var letter))
+                return MenuLetterPress.None;
+
+            var reserved = MenuInputUtil.TryGetLetterKey(letter, out var key)
+                && _shortcutCatalog.HasUnmodifiedBindingForKeyInContext(key, in context);
+            return new MenuLetterPress(letter, reserved);
         }
 
         private MenuAction HandleClose(MenuScreen current, MenuCloseSource source, CloseKind kind)

@@ -103,6 +103,7 @@ namespace TopSpeed.Game
             _shortcutMapping = new ShortcutMappingHandler(input, _menu, _settings, speech, SaveSettings);
             _updateConfig = UpdateConfig.Default;
             _updateService = new UpdateService(_updateConfig);
+            ApplyUpdateProxySettings();
             _multiplayerConnector = new MultiplayerConnector();
             _sessionReconnector = new SessionReconnector(_multiplayerConnector);
             var multiplayerCoordinator = new MultiplayerCoordinator(
@@ -123,10 +124,22 @@ namespace TopSpeed.Game
                 SetMultiplayerLoadout);
             _multiplayerCoordinator = multiplayerCoordinator;
             _multiplayerMenuTouch = multiplayerCoordinator;
+            _multiplayerCommunicatorRuntime = new Multiplayer.Communicator.MultiplayerCommunicatorRuntime(
+                audio,
+                _settings,
+                multiplayerCoordinator,
+                input,
+                GetSession,
+                _fileDialogs,
+                text => _speech.Speak(text),
+                SaveSettings,
+                IsShortcutActionHeld,
+                () => _textInputPromptActive || _inputMapping.IsActive || _shortcutMapping.IsActive);
             _multiplayerRaceRuntime = new MultiplayerRaceRuntime(this);
             _multiplayerDispatch = new MultiplayerDispatch(this);
             _menuRegistry.RegisterAll();
             _multiplayerCoordinator.ConfigureMenuCloseHandlers();
+            RegisterGlobalShortcutActions();
             ApplySavedShortcutBindings();
             _settings.AudioVolumes ??= new AudioVolumeSettings();
             _settings.SyncAudioCategoriesFromMusicVolume();

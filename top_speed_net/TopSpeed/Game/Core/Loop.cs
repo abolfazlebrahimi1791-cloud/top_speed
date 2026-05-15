@@ -17,9 +17,11 @@ namespace TopSpeed.Game
                  || _dialogs.HasActiveOverlayDialog
                  || _choices.HasActiveChoiceDialog));
 
+            HandleGlobalVolumeShortcuts();
             UpdateTextInputPrompt();
             UpdateSessionReconnect();
             _stateMachine.Update(deltaSeconds);
+            _multiplayerCommunicatorRuntime.Update(deltaSeconds);
 
             if (_pendingDriveStart)
             {

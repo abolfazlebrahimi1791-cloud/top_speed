@@ -123,7 +123,14 @@ namespace TopSpeed.Protocol
         TrackPackageCatalogRequest = 67,
         TrackPackageCatalog = 68,
         ClientHeartbeat = 69,
-        ServerHeartbeat = 70
+        ServerHeartbeat = 70,
+        PlayerVoiceStart = 71,
+        PlayerVoiceFrame = 72,
+        PlayerVoiceStop = 73,
+        PlayerCommunicatorMediaBegin = 74,
+        PlayerCommunicatorMediaChunk = 75,
+        PlayerCommunicatorMediaEnd = 76,
+        PlayerCommunicatorMediaState = 77
     }
 
     public enum ProtocolMessageCode : byte

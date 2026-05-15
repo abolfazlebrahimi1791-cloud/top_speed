@@ -28,9 +28,12 @@ namespace TopSpeed.Core.Settings
                     AmbientsAndSourcesPercent = audio.AmbientsAndSourcesPercent,
                     MusicPercent = audio.MusicPercent,
                     OnlineServerEventsPercent = audio.OnlineServerEventsPercent,
+                    CommunicatorPercent = audio.CommunicatorPercent,
                     HrtfAudio = settings.HrtfAudio,
                     StereoWidening = settings.StereoWidening,
-                    AutoDetectAudioDeviceFormat = settings.AutoDetectAudioDeviceFormat
+                    AutoDetectAudioDeviceFormat = settings.AutoDetectAudioDeviceFormat,
+                    VoiceInputDevice = settings.VoiceInputDeviceName,
+                    VoiceInputGainPercent = settings.VoiceInputGainPercent
                 },
                 Input = new SettingsInputDocument
                 {
@@ -101,6 +104,8 @@ namespace TopSpeed.Core.Settings
                     LastServerAddress = settings.LastServerAddress,
                     DefaultServerPort = settings.DefaultServerPort,
                     DefaultCallSign = settings.DefaultCallSign,
+                    UseUpdateProxy = settings.UseUpdateProxy,
+                    UpdateProxyUrlPrefix = settings.UpdateProxyUrlPrefix,
                     SavedServers = new SettingsSavedServersDocument
                     {
                         Servers = BuildSavedServers(settings.SavedServers)

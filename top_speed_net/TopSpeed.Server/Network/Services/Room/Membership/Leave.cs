@@ -23,6 +23,7 @@ namespace TopSpeed.Server.Network
                 {
                     player.RoomId = null;
                     player.Live = null;
+                    player.Voice = null;
                     if (player.LifecycleState != ConnectionLifecycleState.Closed
                         && player.LifecycleState != ConnectionLifecycleState.Expired)
                     {

@@ -2,6 +2,14 @@ namespace TopSpeed.Core.Multiplayer
 {
     internal sealed partial class MultiplayerCoordinator
     {
+        internal bool IsCommunicatorEnabled => _state.Communicator.Enabled;
+        internal bool IsCommunicatorVoiceActivationEnabled => _state.Communicator.VoiceActivationEnabled;
+        internal ushort CommunicatorFrequencyTenths => _state.Communicator.FrequencyTenths;
+
+        bool IMultiplayerRuntime.CommunicatorEnabled => IsCommunicatorEnabled;
+        bool IMultiplayerRuntime.CommunicatorVoiceActivationEnabled => IsCommunicatorVoiceActivationEnabled;
+        ushort IMultiplayerRuntime.CommunicatorFrequencyTenths => CommunicatorFrequencyTenths;
+
         void IMultiplayerRuntime.NextChatCategory()
         {
             NextChatCategory();
@@ -87,6 +95,26 @@ namespace TopSpeed.Core.Multiplayer
         void IMultiplayerMenuTouch.OpenRoomChatHotkey()
         {
             OpenRoomChatHotkey();
+        }
+
+        void IMultiplayerMenuTouch.ToggleCommunicator()
+        {
+            ToggleCommunicator();
+        }
+
+        void IMultiplayerMenuTouch.ToggleCommunicatorVoiceActivation()
+        {
+            ToggleCommunicatorVoiceActivation();
+        }
+
+        void IMultiplayerMenuTouch.BeginCommunicatorFrequencyInput()
+        {
+            BeginCommunicatorFrequencyInput();
+        }
+
+        void IMultiplayerMenuTouch.AnnounceCommunicatorFrequency()
+        {
+            AnnounceCommunicatorFrequency();
         }
 
         string IMultiplayerRuntime.ResolvePlayerName(byte playerNumber)

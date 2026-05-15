@@ -109,6 +109,60 @@ public sealed class ServerHandshakeBehaviorTests
         fixture.Server.GetStressSnapshotForTest().PlayerCount.Should().Be(1);
     }
 
+    [Fact]
+    public void HandshakeCompatibilityStatus_ShouldStayExact_WhenClientCurrentMatchesServerCurrent()
+    {
+        var compat = ProtocolCompat.Resolve(ProtocolProfile.ClientSupported, ProtocolProfile.ServerSupported);
+        compat.IsCompatible.Should().BeTrue();
+
+        var status = RaceServer.ResolveEffectiveCompatibilityStatusForTest(compat, ProtocolProfile.Current);
+        status.Should().Be(ProtocolCompatStatus.Exact);
+    }
+
+    [Fact]
+    public void HandshakeCompatibilityStatus_ShouldDowngrade_WhenClientCurrentDiffersFromServerCurrent()
+    {
+        var compat = ProtocolCompat.Resolve(ProtocolProfile.ClientSupported, ProtocolProfile.ServerSupported);
+        compat.IsCompatible.Should().BeTrue();
+
+        var status = RaceServer.ResolveEffectiveCompatibilityStatusForTest(compat, ProtocolProfile.ClientSupported.MinSupported);
+        status.Should().Be(ProtocolCompatStatus.CompatibleDowngrade);
+    }
+
+    [Fact]
+    public void HandshakeNegotiatedVersion_ShouldUseClientVersion_WhenStatusIsExact()
+    {
+        var negotiated = RaceServer.ResolveNegotiatedVersionForSessionForTest(
+            ProtocolCompatStatus.Exact,
+            ProtocolProfile.ServerSupported.MaxSupported,
+            ProtocolProfile.Current);
+
+        negotiated.Should().Be(ProtocolProfile.Current);
+    }
+
+    [Fact]
+    public void HandshakeNegotiatedVersion_ShouldKeepNegotiated_WhenStatusIsCompatibleDowngrade()
+    {
+        var negotiated = RaceServer.ResolveNegotiatedVersionForSessionForTest(
+            ProtocolCompatStatus.CompatibleDowngrade,
+            ProtocolProfile.ServerSupported.MaxSupported,
+            ProtocolProfile.ClientSupported.MinSupported);
+
+        negotiated.Should().Be(ProtocolProfile.ServerSupported.MaxSupported);
+    }
+
+    [Fact]
+    public void PlayersSnapshot_ShouldReportClientVersion_NotNegotiatedRangeMax()
+    {
+        using var fixture = new HandshakeFixture();
+        fixture.SendProtocolHello();
+        fixture.SendPlayerHello("pilot");
+
+        var players = fixture.Server.GetPlayersSnapshot();
+        players.Should().HaveCount(1);
+        players[0].ProtocolVersion.Should().Be(ProtocolProfile.Current);
+    }
+
     private sealed class HandshakeFixture : IDisposable
     {
         public HandshakeFixture(ServerModerationSettings? moderation = null)

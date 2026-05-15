@@ -55,6 +55,7 @@ namespace TopSpeed.Drive.Single
         private readonly ICar _car;
         private readonly SessionRuntime _session;
         private readonly Queue _soundQueue;
+        private readonly Queue _raceInfoQueue;
         private readonly ICarController _finishLockController;
         private readonly VehicleRadioController _localRadio;
         private readonly RadioVehiclePanel _radioPanel;
@@ -69,6 +70,7 @@ namespace TopSpeed.Drive.Single
         private readonly Source[] _soundLaps;
         private readonly Source?[] _soundPosition;
         private readonly Source?[] _soundPlayerNr;
+        private readonly Source?[] _soundPlayerNrInfo;
         private readonly Source?[] _soundFinished;
         private readonly Dictionary<int, int> _finishTimesMs;
         private readonly List<int> _finishOrder;
@@ -142,6 +144,7 @@ namespace TopSpeed.Drive.Single
             _fileDialogs = fileDialogs ?? throw new ArgumentNullException(nameof(fileDialogs));
             _raceAudio = new RaceAudioFactory(_audio);
             _soundQueue = new Queue();
+            _raceInfoQueue = new Queue();
             _finishLockController = new FinishLockInputController(input);
             _manualTransmission = !automaticTransmission;
             _nComputerPlayers = Math.Min(settings.NrOfComputers, MaxComputerPlayers);
@@ -154,6 +157,7 @@ namespace TopSpeed.Drive.Single
             _soundUnkey = CreateUnkeySounds();
             _soundPosition = new Source?[MaxPlayers];
             _soundPlayerNr = new Source?[MaxPlayers];
+            _soundPlayerNrInfo = new Source?[MaxPlayers];
             _soundFinished = new Source?[MaxPlayers];
             _finishTimesMs = new Dictionary<int, int>(MaxPlayers);
             _finishOrder = new List<int>(MaxPlayers);
@@ -170,7 +174,7 @@ namespace TopSpeed.Drive.Single
             LoadRaceUiSounds();
             _soundStart = LoadLanguageSound("race\\start321");
 
-            _trackAudio = new TrackAudioService(_settings, GetRandomSoundBySlot, _soundTurnEndDing, QueueSound, (sessionEvent, delay) => _session!.QueueEvent(sessionEvent, delay));
+            _trackAudio = new TrackAudioService(_settings, GetRandomSoundBySlot, _soundTurnEndDing, QueueRaceInfoSound, (sessionEvent, delay) => _session!.QueueEvent(sessionEvent, delay));
             _panels = new PanelsSubsystem("panels", 110, _input, _panelManager, _radioPanel, SpeakText);
             _playerVehicle = new PlayerVehicleSubsystem(
                 "vehicle",
@@ -259,7 +263,7 @@ namespace TopSpeed.Drive.Single
                     if (CheckFinish())
                         _session!.QueueEvent(new Event(Events.ProgressFinish), 1.0f + _speakTime - _session.Context.ProgressSeconds);
                 },
-                Speak);
+                SpeakRaceInfo);
             _commentary = new CommentarySubsystem(
                 "commentary",
                 210,
