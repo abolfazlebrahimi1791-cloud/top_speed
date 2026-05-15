@@ -44,6 +44,11 @@ namespace TopSpeed.Vehicles
         {
             if (_combustionState == EngineCombustionState.Starting)
                 return;
+            if (!CanStartEngineWithFuel())
+            {
+                PlayFuelStartBlockedCue();
+                return;
+            }
             if (_engineRotationState != EngineRotationState.Stopped)
             {
                 ResumeCombustion();
@@ -86,6 +91,11 @@ namespace TopSpeed.Vehicles
         {
             if (_combustionState == EngineCombustionState.Starting)
                 return;
+            if (!CanStartEngineWithFuel())
+            {
+                PlayFuelStartBlockedCue();
+                return;
+            }
             if (_engineRotationState != EngineRotationState.Stopped)
             {
                 ResumeCombustion();
@@ -113,6 +123,11 @@ namespace TopSpeed.Vehicles
         {
             if (_combustionState == EngineCombustionState.Starting)
                 return;
+            if (!CanStartEngineWithFuel())
+            {
+                PlayFuelStartBlockedCue();
+                return;
+            }
 
             var delay = Math.Max(0f, _soundStart.LengthSeconds - 0.1f);
             PushEvent(EventType.CarStart, delay);
@@ -372,6 +387,12 @@ namespace TopSpeed.Vehicles
 
         private void ResumeCombustion()
         {
+            if (!CanStartEngineWithFuel())
+            {
+                PlayFuelStartBlockedCue();
+                return;
+            }
+
             _soundStop?.Stop();
             _soundStart.Stop();
             _switchingGear = 0;

@@ -1,4 +1,5 @@
 using System;
+using TopSpeed.Physics.Fuel;
 using TopSpeed.Protocol;
 
 namespace TopSpeed.Vehicles
@@ -103,6 +104,8 @@ namespace TopSpeed.Vehicles
             RevLimiter = revLimiter;
             AutoShiftRpm = autoShiftRpm;
             EngineBraking = engineBraking;
+            FuelTankCapacityLiters = FuelDefaults.DefaultTankCapacityLiters;
+            EngineDisplacementLiters = ResolveDefaultEngineDisplacementLiters(carType);
             MassKg = massKg;
             DrivetrainEfficiency = drivetrainEfficiency;
             EngineBrakingTorqueNm = engineBrakingTorqueNm;
@@ -189,6 +192,8 @@ namespace TopSpeed.Vehicles
         public float RevLimiter { get; }
         public float AutoShiftRpm { get; }
         public float EngineBraking { get; }
+        public float FuelTankCapacityLiters { get; }
+        public float EngineDisplacementLiters { get; }
         public float MassKg { get; }
         public float DrivetrainEfficiency { get; }
         public float EngineBrakingTorqueNm { get; }
@@ -255,5 +260,38 @@ namespace TopSpeed.Vehicles
         public bool ShiftOnDemand { get; }
         public AutomaticDrivelineTuning AutomaticTuning { get; }
         public TransmissionPolicy TransmissionPolicy { get; }
+
+        private static float ResolveDefaultEngineDisplacementLiters(CarType carType)
+        {
+            switch (carType)
+            {
+                case CarType.Vehicle1:
+                    return 3.8f;
+                case CarType.Vehicle2:
+                    return 4.0f;
+                case CarType.Vehicle3:
+                    return 1.4f;
+                case CarType.Vehicle4:
+                    return 2.0f;
+                case CarType.Vehicle5:
+                    return 7.0f;
+                case CarType.Vehicle6:
+                    return 2.5f;
+                case CarType.Vehicle7:
+                    return 6.5f;
+                case CarType.Vehicle8:
+                    return 3.0f;
+                case CarType.Vehicle9:
+                    return 2.1f;
+                case CarType.Vehicle10:
+                    return 1.0f;
+                case CarType.Vehicle11:
+                    return 1.1f;
+                case CarType.Vehicle12:
+                    return 1.0f;
+                default:
+                    return FuelDefaults.DefaultEngineDisplacementLiters;
+            }
+        }
     }
 }

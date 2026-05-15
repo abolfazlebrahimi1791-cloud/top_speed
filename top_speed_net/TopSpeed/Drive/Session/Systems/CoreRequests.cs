@@ -12,6 +12,7 @@ namespace TopSpeed.Drive.Session.Systems
         private const float KmToMiles = 0.621371f;
         private const float MetersPerMile = 1609.344f;
         private const float MetersToFeet = 3.28084f;
+        private const float LitersToGallons = 0.264172052f;
 
         private readonly DriveInput _input;
         private readonly DriveSettings _settings;
@@ -169,21 +170,24 @@ namespace TopSpeed.Drive.Session.Systems
             var speedKmh = _car.SpeedKmh;
             var rpm = _car.EngineRpm;
             var horsepower = _car.EngineNetHorsepower;
+            var fuelStatus = BuildFuelStatusPhrase();
             if (_settings.Units == UnitSystem.Imperial)
             {
                 _speakText(LocalizationService.Format(
-                    LocalizationService.Mark("{0:F0} miles per hour, {1:F0} RPM, {2:F0} horsepower"),
+                    LocalizationService.Mark("{0:F0} miles per hour, {1:F0} RPM, {2:F0} horsepower, {3}"),
                     speedKmh * KmToMiles,
                     rpm,
-                    horsepower));
+                    horsepower,
+                    fuelStatus));
             }
             else
             {
                 _speakText(LocalizationService.Format(
-                    LocalizationService.Mark("{0:F0} kilometers per hour, {1:F0} RPM, {2:F0} horsepower"),
+                    LocalizationService.Mark("{0:F0} kilometers per hour, {1:F0} RPM, {2:F0} horsepower, {3}"),
                     speedKmh,
                     rpm,
-                    horsepower));
+                    horsepower,
+                    fuelStatus));
             }
         }
 
@@ -209,6 +213,49 @@ namespace TopSpeed.Drive.Session.Systems
                 else
                     _speakText(LocalizationService.Format(LocalizationService.Mark("{0:F0} meters traveled"), distanceM));
             }
+        }
+
+        private string BuildFuelStatusPhrase()
+        {
+            var tankLiters = Math.Max(0f, _car.FuelTankCapacityLiters);
+            var remainingLiters = Math.Max(0f, Math.Min(tankLiters, _car.FuelLitersRemaining));
+            var fuelPercent = tankLiters > 0f
+                ? Math.Max(0f, Math.Min(100f, (remainingLiters / tankLiters) * 100f))
+                : 0f;
+
+            if (_settings.Units == UnitSystem.Imperial)
+            {
+                var remainingGallons = remainingLiters * LitersToGallons;
+                var mpg = _car.FuelEfficiencyMpg;
+                if (mpg > 0.05f)
+                {
+                    return LocalizationService.Format(
+                        LocalizationService.Mark("fuel {0:F1} gallons, {1:F0} percent, {2:F1} miles per gallon"),
+                        remainingGallons,
+                        fuelPercent,
+                        mpg);
+                }
+
+                return LocalizationService.Format(
+                    LocalizationService.Mark("fuel {0:F1} gallons, {1:F0} percent"),
+                    remainingGallons,
+                    fuelPercent);
+            }
+
+            var litersPer100Km = _car.FuelEfficiencyLitersPer100Km;
+            if (litersPer100Km > 0.05f)
+            {
+                return LocalizationService.Format(
+                    LocalizationService.Mark("fuel {0:F1} liters, {1:F0} percent, {2:F1} liters per 100 kilometers"),
+                    remainingLiters,
+                    fuelPercent,
+                    litersPer100Km);
+            }
+
+            return LocalizationService.Format(
+                LocalizationService.Mark("fuel {0:F1} liters, {1:F0} percent"),
+                remainingLiters,
+                fuelPercent);
         }
     }
 }
